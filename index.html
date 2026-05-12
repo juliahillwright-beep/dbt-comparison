@@ -374,7 +374,7 @@
   </tr>
 
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/tools/vscode-extension" target="_blank" class="feature-link">VS Code extension</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/install-dbt-extension" target="_blank" class="feature-link">VS Code extension</a>
       <span class="sub">Connect your local VS Code editor to your dbt project with syntax highlighting, autocomplete, and AI assistance.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects caps VS Code extension at 15 users. dbt platform has no cap.</span></span>
     </td>
@@ -482,7 +482,7 @@
   </tr>
 
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/about-state" target="_blank" class="feature-link">State-aware orchestration (SAO)</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/state-aware-about" target="_blank" class="feature-link">State-aware orchestration (SAO)</a>
       <span class="sub">Skips models whose upstream inputs haven't changed, reducing redundant warehouse compute.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Skips models whose upstream inputs haven't changed. Snowflake dbt projects does a full DAG rebuild on every run — if model 47 of 60 fails, it reruns all 60. Platform customers see 30–50% compute reduction. That's a number you can put in front of a CFO.</span></span>
     </td>
@@ -807,7 +807,7 @@
   </tr>
 
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/deployment-approvals" target="_blank" class="feature-link">Deployment approvals and audit trail</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/manage-access/audit-log" target="_blank" class="feature-link">Deployment approvals and audit trail</a>
       <span class="sub">Track who deployed what and when — every production change is logged with full history and attribution.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">With Snowflake dbt projects, anyone with the right role can execute against production — no approval gate, no deployment history, no record of who made the change that broke the dashboard. Trust is hard to earn and easy to lose.</span></span>
     </td>
@@ -824,7 +824,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/manage-access/model-access" target="_blank" class="feature-link">Model-level and column-level access control</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/govern/model-access" target="_blank" class="feature-link">Model-level and column-level access control</a>
       <span class="sub">Control which dbt users can view or modify specific models, beyond what warehouse-level permissions can provide.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">dbt-native permissions beyond Snowflake's schema-level RBAC only.</span></span></td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -832,7 +832,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/govern-data-lineage-with-mesh" target="_blank" class="feature-link">dbt Mesh — cross-project</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/mesh/about-mesh" target="_blank" class="feature-link">dbt Mesh — cross-project</a>
       <span class="sub">Reference models owned by other teams across separate dbt projects, enabling governed data sharing at scale.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Reference models across multiple dbt projects; scale governance across teams and domains.</span></span></td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -840,7 +840,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/govern-data-lineage-with-mesh" target="_blank" class="feature-link">dbt Mesh — cross-platform</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/mesh/about-mesh" target="_blank" class="feature-link">dbt Mesh — cross-platform</a>
       <span class="sub">Extend cross-project references across teams using different data warehouses or platforms.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Reference models across different warehouse platforms. Not possible in Snowflake dbt projects.</span></span></td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -848,7 +848,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/about-cloud/hybrid-projects" target="_blank" class="feature-link">Hybrid projects</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/hybrid-projects" target="_blank" class="feature-link">Hybrid projects</a>
       <span class="sub">Run dbt Core and dbt platform projects within the same organization, sharing models across both environments.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Use dbt Core and dbt platform within the same org.</span></span></td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -856,7 +856,7 @@
     <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/governance/dbt-insights" target="_blank" class="feature-link">dbt Insights</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/explore/dbt-insights" target="_blank" class="feature-link">dbt Insights</a>
       <span class="sub">An embedded analytics interface for querying your warehouse and exploring metadata without leaving dbt.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -864,7 +864,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/governance/cost-optimization" target="_blank" class="feature-link">Cost optimization dashboard</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/explore/cost-insights" target="_blank" class="feature-link">Cost optimization dashboard</a>
       <span class="sub">Identify your most expensive models, track warehouse spend over time, and surface opportunities to reduce compute.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -878,7 +878,7 @@
   </tr>
 
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/security/mfa" target="_blank" class="feature-link">MFA</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/manage-access/about-user-access" target="_blank" class="feature-link">MFA</a>
       <span class="sub">Require a second form of authentication for all dbt platform logins.</span>
     </td>
     <td class="check-cell"><span class="tag tag-snow">Via Snowflake</span></td>
@@ -886,7 +886,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/security/soc2" target="_blank" class="feature-link">SOC 2 Type II</a>
+    <td class="feature-label"><a href="https://www.dbtlabs.com/security" target="_blank" class="feature-link">SOC 2 Type II</a>
       <span class="sub">dbt platform has completed an independent SOC 2 Type II audit verifying its security, availability, and confidentiality controls.</span>
     </td>
     <td class="check-cell"><span class="tag tag-snow">Via Snowflake</span></td>
@@ -894,7 +894,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/security/sso-saml" target="_blank" class="feature-link">SSO / SAML</a>
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/platform/manage-access/sso-overview" target="_blank" class="feature-link">SSO / SAML</a>
       <span class="sub">Authenticate users through your organization's identity provider (Okta, Microsoft Entra ID, etc.) via SAML or OIDC.</span>
     </td>
     <td class="check-cell"><span class="tag tag-snow">Via Snowflake</span></td>
