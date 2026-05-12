@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dbt Discovery — Trap-Setting Questions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:  #FF6245;
+      --green:   #0d7a4a;
+      --purple:  #7c3aed;
+      --blue:    #2563eb;
+      --snow:    #0070c0;
+      --red:     #c2290a;
+      --border:  #e5e5e2;
+      --bg:      #f9f9f8;
+      --text:    #1a1a1a;
+      --muted:   #666;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 40px 32px 32px;
+      text-align: center;
+    }
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 10px;
+    }
+    .page-header h1 { font-size: 30px; font-weight: 800; margin-bottom: 8px; }
+    .page-header > p {
+      font-size: 15px; color: var(--muted); max-width: 620px;
+      margin: 0 auto 20px; line-height: 1.6;
+    }
+    .notice {
+      background: #fff8f0; border: 1px solid #ffd199; border-radius: 8px;
+      padding: 10px 16px; font-size: 12px; color: #7a4800;
+      max-width: 820px; margin: 0 auto 24px; text-align: left; line-height: 1.6;
+    }
+
+    /* ── HOW TO USE STRIP ── */
+    .how-to {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      max-width: 820px; margin: 0 auto;
+    }
+    .how-card {
+      flex: 1; min-width: 180px; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px;
+    }
+    .how-card .icon { font-size: 18px; margin-bottom: 6px; display: block; }
+    .how-card strong { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; }
+    .how-card p { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+    /* ── JUMP NAV ── */
+    .jump-nav {
+      background: #fff; border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: center; flex-wrap: wrap;
+      gap: 0; overflow-x: auto; padding: 0 16px;
+      position: sticky; top: 0; z-index: 20;
+    }
+    .jump-nav a {
+      display: block; padding: 10px 12px; font-size: 12px; font-weight: 600;
+      color: var(--muted); text-decoration: none; white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+    }
+    .jump-nav a:hover { color: var(--text); border-color: var(--orange); }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 860px; margin: 0 auto; padding: 32px 16px 64px;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 40px; }
+
+    .section-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-header .section-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 16px; font-weight: 700; }
+    .section-header .section-context {
+      font-size: 12px; color: var(--muted); margin-left: auto;
+      background: var(--bg); border: 1px solid var(--border);
+      padding: 2px 10px; border-radius: 20px; white-space: nowrap;
+    }
+
+    /* section icon colors */
+    .icon-overview   { background: #f0f0ef; }
+    .icon-dev        { background: #edfaf3; }
+    .icon-orch       { background: #fff0e6; }
+    .icon-cicd       { background: #e8f0ff; }
+    .icon-releases   { background: #f3eeff; }
+    .icon-api        { background: #e0f3ff; }
+    .icon-catalog    { background: #fef3e2; }
+    .icon-semantic   { background: #f0fdf4; }
+    .icon-governance { background: #fdf2ff; }
+    .icon-security   { background: #fff0f0; }
+    .icon-support    { background: #f0f9ff; }
+
+    /* ── QUESTION CARD ── */
+    .question-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px;
+      margin-bottom: 10px;
+      border-left: 3px solid transparent;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .question-card:hover {
+      border-left-color: var(--orange);
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+
+    .question-text {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      line-height: 1.5; margin-bottom: 8px;
+      font-style: italic;
+    }
+    .question-text::before { content: '"'; }
+    .question-text::after  { content: '"'; }
+
+    .surfaces {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 12px; color: var(--muted); line-height: 1.5;
+    }
+    .surfaces-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--orange);
+      white-space: nowrap; margin-top: 1px;
+    }
+
+    .tag-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .tag {
+      font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: 10px; white-space: nowrap;
+    }
+    .tag-cost        { background: #fff0e6; color: #b34400; }
+    .tag-scale       { background: #edfaf3; color: var(--green); }
+    .tag-governance  { background: #f3eeff; color: var(--purple); }
+    .tag-lock-in     { background: #e8f0ff; color: var(--blue); }
+    .tag-dx          { background: #fdf2ff; color: #9333ea; }
+    .tag-security    { background: #fff0f0; color: #c2290a; }
+    .tag-support     { background: #e0f3ff; color: var(--snow); }
+    .tag-ai          { background: #f0fdf4; color: var(--green); }
+
+    /* ── OPENER TIP ── */
+    .opener-tip {
+      background: #fffbf0; border: 1px solid #ffe8a1;
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 12px; color: #7a5800; line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .opener-tip strong { font-weight: 700; }
+
+    /* ── FOOTNOTE ── */
+    .footnote {
+      font-size: 11px; color: #999; text-align: center;
+      margin-top: 40px; line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="page-header">
+  <div class="eyebrow">dbt Labs Sales Enablement — Internal use only</div>
+  <h1>Trap-setting discovery questions</h1>
+  <p>Open-ended questions that expose the gaps in Snowflake dbt projects and surface the operational risks your champion can take upstairs. Don't open with feature comparisons — open with business value.</p>
+
+  <div class="notice">
+    <strong>Framing principle:</strong> The goal is to move the conversation from "what does dbt platform have that Snowflake dbt projects doesn't?" to "what does your data platform need to be ready for what's coming?" Feature differences are the <em>second</em> conversation, not the first. <strong>Do not share with Snowflake.</strong>
+  </div>
+
+  <div class="how-to">
+    <div class="how-card">
+      <span class="icon">🎯</span>
+      <strong>Lead with curiosity</strong>
+      <p>Ask genuinely. Let them describe their current state before positioning anything.</p>
+    </div>
+    <div class="how-card">
+      <span class="icon">💬</span>
+      <strong>Listen for the ceiling</strong>
+      <p>The pain usually appears when they say "we have to do that manually" or "we built something custom for that."</p>
+    </div>
+    <div class="how-card">
+      <span class="icon">📈</span>
+      <strong>Quantify the gap</strong>
+      <p>Follow any "yes, that's a problem" with: "What's the business impact of that today?"</p>
+    </div>
+    <div class="how-card">
+      <span class="icon">🔗</span>
+      <strong>Pair with the comparison page</strong>
+      <p>Use the <a href="index.html" style="color:var(--orange)">feature comparison</a> to show exactly what the answer unlocks.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ JUMP NAV ══════════ -->
+<nav class="jump-nav">
+  <a href="#overview">Overview</a>
+  <a href="#development">Development</a>
+  <a href="#orchestration">Orchestration</a>
+  <a href="#cicd">CI/CD</a>
+  <a href="#releases">Release tracks</a>
+  <a href="#api">API &amp; integrations</a>
+  <a href="#catalog">Catalog &amp; docs</a>
+  <a href="#semantic">Semantic Layer</a>
+  <a href="#governance">Governance</a>
+  <a href="#security">Security</a>
+  <a href="#support">Support</a>
+</nav>
+
+<!-- ══════════ CONTENT ══════════ -->
+<div class="content">
+
+  <!-- OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon icon-overview">📊</div>
+      <h2>Plan overview &amp; strategy</h2>
+      <span class="section-context">Lock-in · scale · cost</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "Before we get into the product, I'd love to understand where you are today and where you're headed. Mind if I ask a few questions?"</div>
+
+    <div class="question-card">
+      <div class="question-text">How many people are actively developing in your dbt project today — and do you expect that to grow in the next 12 months?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no hard seat cap, but Starter is capped at 5 developers. Rapid team growth creates an upgrade pressure point.</div>
+      <div class="tag-row"><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Does your organization run data workloads on any platform other than Snowflake today — or is that something on the roadmap?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects is locked to Snowflake. Any multi-warehouse strategy, M&amp;A activity, or new platform adoption would require rebuilding the transformation layer.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Have you ever gone through an acquisition, or is that something leadership thinks about? What happened to the acquired team's data stack?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> M&amp;A is the most common way teams end up with a second warehouse unexpectedly. Snowflake lock-in becomes a liability.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How are you tracking the cost of your dbt runs in Snowflake today, and is that number going up?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without state-aware orchestration, every run rebuilds the full DAG. Customers typically waste 29%+ on unchanged models. Opens the cost optimization conversation.</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
+    </div>
+  </div>
+
+  <!-- DEVELOPMENT -->
+  <div class="section" id="development">
+    <div class="section-header">
+      <div class="section-icon icon-dev">💻</div>
+      <h2>Development</h2>
+      <span class="section-context">DX · collaboration · AI</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "Walk me through what a typical day looks like for one of your analytics engineers — from picking up a task to getting it into production."</div>
+
+    <div class="question-card">
+      <div class="question-text">When two developers are working on the same dbt project simultaneously, how do they avoid stepping on each other's work?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces are personal and isolated — there's no shared visibility. Collaboration at scale breaks down quickly.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How many of your developers are working in VS Code vs. the browser-based editor today?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects caps the official VS Code extension at 15 users. Teams beyond that hit a hard wall.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Are your engineers using any AI tools to write SQL or scaffold dbt models today? What does that workflow look like?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no Copilot, no BYOK, and no natural language in Canvas. Opens the dbt Copilot conversation.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When a model fails or produces unexpected results, what does the debugging process look like for your team?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces lack autocomplete, inline previews, dbt debug support, and proper log visibility. Debugging becomes slow and manual.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How do your less technical analysts or BI developers interact with your dbt project today — are they involved at all?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Canvas unlocks dbt for non-engineers. Snowflake dbt projects has no visual editor, limiting dbt adoption to a small technical subset of the team.</div>
+      <div class="tag-row"><span class="tag tag-scale">Scale</span><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If you brought on five new analytics engineers tomorrow, how long would it take to get them productive in your current dbt setup?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Onboarding friction in Snowflake dbt projects (slow pod-warm, no AI assist, clunky UI) vs. the full dbt platform IDE experience with Copilot.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <!-- ORCHESTRATION -->
+  <div class="section" id="orchestration">
+    <div class="section-header">
+      <div class="section-icon icon-orch">⚙️</div>
+      <h2>Deployment &amp; orchestration</h2>
+      <span class="section-context">Cost · reliability · ops burden</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "Tell me about what happens when a dbt job runs in production. Where does it live, how is it triggered, and who's responsible for it?"</div>
+
+    <div class="question-card">
+      <div class="question-text">If model 47 out of 60 in your DAG fails, what happens to the other 59 models the next time the job runs?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without state-aware orchestration, Snowflake dbt projects reruns all 60 models — even the 59 that didn't change. Platform customers see 30–50% compute reduction with SAO. That's a number you can put in front of a CFO.</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Walk me through how you schedule a dbt job today. What does the setup process look like?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects schedules via Snowflake Tasks, requiring manual SQL authoring with no retry logic, no native alerting, and no history UI.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-cost">Cost</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When a production pipeline fails at 3am, how does your team find out — and what's the typical time to recovery?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Tasks have no native alerting. Teams need custom webhooks or Snowflake Alerts to get notified. dbt platform sends native email/Slack alerts with model-level context.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If you need to check whether a job ran successfully last Tuesday, what does that look like today?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects requires SQL queries against TASK_HISTORY. dbt platform provides a full job run history UI with model-level pass/fail, duration, and row counts.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How much engineering time has gone into building and maintaining your current orchestration setup around dbt?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Teams that DIY orchestration around Snowflake Tasks end up rebuilding what dbt platform provides — custom alerting, retry logic, history views. This engineering cost often exceeds platform pricing.</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Do you check whether your source data is fresh before your dbt jobs kick off? How?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Source freshness monitoring isn't managed in Snowflake dbt projects. dbt platform provides built-in freshness checks as part of the job run lifecycle.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+  </div>
+
+  <!-- CI/CD -->
+  <div class="section" id="cicd">
+    <div class="section-header">
+      <div class="section-icon icon-cicd">🔀</div>
+      <h2>CI/CD &amp; version control</h2>
+      <span class="section-context">Cost · speed · safety</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "Take me through the life of a code change — from a developer starting work on a branch to it being live in production."</div>
+
+    <div class="question-card">
+      <div class="question-text">What happens when a developer opens a pull request today — does anything run automatically to validate the change?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no managed CI. Every PR triggers a full DAG rebuild rather than running only the modified models (Slim CI).</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How long does it take to run your full test suite on a pull request? Is that slowing down your engineers?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without Slimmer CI, every PR runs the full test suite even if only one model changed. Opens the Slim/Slimmer CI conversation and the associated compute cost.</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">What happens when two developers have open PRs at the same time — do they ever conflict or block each other?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no concurrent PR isolation. Simultaneous PRs can overwrite each other's work in the same schema.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Before merging a change, can you preview how the model output actually changes — not just that tests pass?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Advanced CI (compare changes) is not available in Snowflake dbt projects. dbt platform can show exact row-level output diffs before a PR is merged.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How do you handle branch management and merge conflicts in your dbt project today?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces only support pull and push — no branch management, no conflict resolution. Full Git integration is a dbt platform feature.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+  </div>
+
+  <!-- RELEASE TRACKS -->
+  <div class="section" id="releases">
+    <div class="section-header">
+      <div class="section-icon icon-releases">🔄</div>
+      <h2>Release tracks</h2>
+      <span class="section-context">Stability · risk · ops burden</span>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How do you handle dbt version upgrades today — is that a manual process, and how much testing is involved?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Core users manage versioning themselves. dbt platform's managed release tracks (Latest, Compatible, Extended) remove this burden entirely.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Has a dbt upgrade ever caused something to break in production? How did you handle it?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Extended and Fallback release tracks exist specifically for this scenario — they give teams more time to validate and a safe rollback path.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How long does it typically take between a new dbt version being released and your team actually running it in production?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Long lag times between releases and adoption mean teams miss improvements. Managed release tracks automate this with appropriate stability buffers.</div>
+      <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+  </div>
+
+  <!-- API & INTEGRATIONS -->
+  <div class="section" id="api">
+    <div class="section-header">
+      <div class="section-icon icon-api">🔌</div>
+      <h2>API &amp; integrations</h2>
+      <span class="section-context">Extensibility · ecosystem</span>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Do you have any downstream systems — Airflow, Prefect, an in-house orchestrator — that need to trigger or monitor dbt runs?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no API or webhook support. Any external orchestration is impossible without the dbt platform API.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How do your BI tools know when a dbt model has been refreshed and is safe to query?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without exposure orchestration, BI tools query stale data. dbt platform can automatically notify or refresh downstream dashboards after a job completes.</div>
+      <div class="tag-row"><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Do you have any tooling that queries metadata about your dbt project — which models ran, how long they took, what their tests are?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> The Discovery API enables programmatic access to all project metadata via GraphQL. Not available in Snowflake dbt projects.</div>
+      <div class="tag-row"><span class="tag tag-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <!-- CATALOG & DOCS -->
+  <div class="section" id="catalog">
+    <div class="section-header">
+      <div class="section-icon icon-catalog">📚</div>
+      <h2>Documentation &amp; data catalog</h2>
+      <span class="section-context">Discovery · trust · lineage</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "When a new analyst joins your team and wants to understand what data is available and how it's defined — where do they start?"</div>
+
+    <div class="question-card">
+      <div class="question-text">When someone on your team needs to understand what a model does or where a table came from, where do they go?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without hosted dbt Docs or dbt Catalog, the answer is often "ask a data engineer" or "read the code." This is a trust and productivity problem.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If a source column got renamed or a table was deprecated upstream, how would your team find out which downstream models are affected?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without column-level lineage, impact analysis is manual and error-prone. dbt Catalog advanced provides full column-level lineage to trace the blast radius of any upstream change.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How do analysts know which dbt models are production-ready and which are experimental? Is there a trust signal they can rely on?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Catalog's Health Tiles and model contracts create visible trust signals. Without them, analysts can't tell a curated model from a draft.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+  </div>
+
+  <!-- SEMANTIC LAYER -->
+  <div class="section" id="semantic">
+    <div class="section-header">
+      <div class="section-icon icon-semantic">📐</div>
+      <h2>dbt Semantic Layer</h2>
+      <span class="section-context">Consistency · AI readiness · portability</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "How does your organization handle metric definitions today — things like revenue, active users, churn rate?"</div>
+
+    <div class="question-card">
+      <div class="question-text">Where do your metric definitions live today — SQL files, BI tools, spreadsheets, or somewhere else?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> If the answer is "multiple places," metric drift is inevitable. MetricFlow centralizes definitions in dbt code so every downstream tool queries the same number.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-ai">AI readiness</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">What happens when two teams define "revenue" differently in their dashboards? How do you resolve that today?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> This is the classic metric consistency problem. dbt Semantic Layer enforces a single definition, versioned in code, queryable by any tool.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If your AI assistant generates a business number — ARR, conversion rate, NPS — how confident are you it's using the right definition?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> If metric definitions are Snowflake-native or scattered across BI tools, AI outputs aren't trustworthy. The dbt Semantic Layer is the foundation for governed AI data outputs.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Are your metric definitions portable — if you added a second BI tool tomorrow, would your definitions carry over automatically?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Semantic Views are locked to Snowflake. MetricFlow definitions in dbt are warehouse-agnostic and work across any connected analytics tool.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <!-- GOVERNANCE -->
+  <div class="section" id="governance">
+    <div class="section-header">
+      <div class="section-icon icon-governance">🏛️</div>
+      <h2>Governance, dbt Mesh &amp; data contracts</h2>
+      <span class="section-context">Scale · trust · multi-team</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "How do you maintain trust with stakeholders without guardrails on production pipelines?"</div>
+
+    <div class="question-card">
+      <div class="question-text">Who can currently deploy to production in your dbt environment — and is there an approval process, or can anyone push?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> In Snowflake dbt projects, anyone with the right Snowflake role can execute against production. There's no approval gate, no deployment history, and no record of who made the change that broke the dashboard.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If something broke in production this week, how quickly could you identify exactly who made the change and what it was?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without a deployment audit trail, root cause analysis is guesswork. dbt platform logs every deployment with full attribution. Trust is hard to earn and easy to lose.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If your organization grew to five separate data teams, each with their own dbt project, how would they safely share and reuse models?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Mesh is the answer — cross-project references with governance. Snowflake dbt projects is limited to a single project, making multi-team scale structurally impossible.</div>
+      <div class="tag-row"><span class="tag tag-scale">Scale</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Do you currently have any dependencies between different dbt projects or business units? How are those managed?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Cross-project dependencies managed manually (copy-pasting models, sharing packages) are a governance risk. dbt Mesh enables governed, versioned cross-project references.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If a downstream consumer — a BI team, an ML engineer — depends on one of your dbt models, how do you prevent breaking changes from reaching them?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Model contracts enforce column names, data types, and constraints in code. Without them, schema changes silently break downstream consumers. Available in dbt Core and above.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">What if an acquired company's data team is using Databricks — can they plug into your dbt project?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects is Snowflake-only. dbt Mesh cross-platform enables cross-project references across teams using different warehouses entirely.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <!-- SECURITY -->
+  <div class="section" id="security">
+    <div class="section-header">
+      <div class="section-icon icon-security">🔒</div>
+      <h2>Security &amp; access control</h2>
+      <span class="section-context">Compliance · identity · network</span>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When someone leaves the company, how quickly is their dbt access revoked — and is that a manual process?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without SCIM, deprovisioning is manual. SCIM automates user lifecycle management via the identity provider, ensuring access is removed the moment someone is offboarded.</div>
+      <div class="tag-row"><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Is SSO required for your enterprise tools? Is dbt on that list — and if not, should it be?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> SSO is an Enterprise-tier feature. Snowflake dbt projects relies on Snowflake's own SSO but doesn't provide dbt-native SAML/OIDC integration.</div>
+      <div class="tag-row"><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If your security team asked for six months of audit logs for your dbt environment right now, what would you show them?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects provides no dbt-level audit logs. dbt Enterprise includes 3-month retention; Enterprise+ has unlimited. This is often a compliance requirement.</div>
+      <div class="tag-row"><span class="tag tag-security">Security</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Do you have compliance requirements that mean data and traffic can't traverse the public internet?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> PrivateLink routes all traffic between dbt and your warehouse over a private network connection. Enterprise+ only — and incompatible with Snowflake dbt projects (IP restrictions break the Native App).</div>
+      <div class="tag-row"><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How do you control which teams or users can see or modify specific models — is that managed at the warehouse level only?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake RBAC only applies at the schema level. dbt platform RBAC provides model-level and environment-level permissions that Snowflake can't replicate on its own.</div>
+      <div class="tag-row"><span class="tag tag-security">Security</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+  </div>
+
+  <!-- SUPPORT -->
+  <div class="section" id="support">
+    <div class="section-header">
+      <div class="section-icon icon-support">🤝</div>
+      <h2>Support</h2>
+      <span class="section-context">Expertise · SLAs · escalation</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "When production breaks, who do you call?"</div>
+
+    <div class="question-card">
+      <div class="question-text">When production breaks, who do you call — and what's the actual escalation path?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake support for dbt is a Snowflake SE who learned dbt. dbt Labs support is the team that <em>builds</em> dbt and owns the roadmap. Snowflake can support their platform. They cannot support dbt.</div>
+      <div class="tag-row"><span class="tag tag-support">Support</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Have you ever needed urgent help with a dbt-specific issue? What was that experience like going through Snowflake's support channel?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake SEs have general dbt knowledge but no deep dbt platform expertise. For complex dbt issues, only dbt Labs support has the depth to resolve them quickly.</div>
+      <div class="tag-row"><span class="tag tag-support">Support</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">What's your SLA expectation for response time when a production dbt pipeline is down and impacting a business-critical dashboard?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Enterprise and Enterprise+ include priority SLAs. Snowflake dbt projects has no dbt Labs SLA — support goes through Snowflake's standard channels.</div>
+      <div class="tag-row"><span class="tag tag-support">Support</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When your team was first setting up dbt, did you get any hands-on onboarding help — or did you figure it out yourselves?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Implementation assistance from dbt Labs solutions engineers is an Enterprise feature. Teams that onboarded themselves often have architectural debt that surfaces later as they scale.</div>
+      <div class="tag-row"><span class="tag tag-support">Support</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <p class="footnote">
+    Sources: dbt Labs internal FY26 platform value drivers, sales enablement, and competitive positioning documentation (May 2026).
+    <strong>Internal use only — do not share with Snowflake.</strong>
+    Pair with the <a href="index.html" style="color:#999">feature comparison page</a> to show what each answer unlocks.
+  </p>
+
+</div>
+
+<script>
+  // Jump nav active state
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks  = document.querySelectorAll('.jump-nav a');
+  const observer  = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => { a.style.color = ''; a.style.borderColor = 'transparent'; });
+        const active = document.querySelector(`.jump-nav a[href="#${e.target.id}"]`);
+        if (active) { active.style.color = '#1a1a1a'; active.style.borderColor = '#FF6245'; }
+      }
+    });
+  }, { rootMargin: '-15% 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
