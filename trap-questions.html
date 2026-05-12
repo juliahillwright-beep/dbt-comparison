@@ -219,6 +219,9 @@
   <button class="tab-btn" data-tab="starter" role="tab">
     dbt Teams / Starter <span class="vs">vs</span> dbt Enterprise
   </button>
+  <button class="tab-btn" data-tab="ai" role="tab">
+    AI Readiness
+  </button>
 </div>
 
 <!-- ══════════ JUMP NAV (shared, updated per tab) ══════════ -->
@@ -245,6 +248,26 @@
   <div class="scenario-banner banner-snow">
     <h2>Snowflake dbt projects → dbt Enterprise</h2>
     <p>For prospects running dbt natively inside Snowflake Workspaces via the Snowflake Native App. Key themes: lock-in, compute waste, no managed CI/CD, personal workspaces that don't scale, and no dbt Labs support.</p>
+  </div>
+
+  <!-- UPGRADE TRIGGER LIST -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:28px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--orange);margin-bottom:12px;">Upgrade trigger list — if a customer says any of these, the Projects conversation is over</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"We need to control who can push to production"</div>
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"We're looking at Databricks too"</div>
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"Our jobs are rebuilding models they don't need to"</div>
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"We need to audit who changed what"</div>
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"We want to connect our observability tool / BI platform / AI agent to dbt"</div>
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"Dev environments keep stepping on each other"</div>
+      <div style="background:var(--bg);border-left:3px solid var(--orange);border-radius:6px;padding:10px 12px;font-size:12px;font-weight:600;font-style:italic;">"We have more than one team working in the same dbt project"</div>
+    </div>
+    <div style="margin-top:14px;background:#fff8f0;border:1px solid #ffd199;border-radius:6px;padding:10px 14px;font-size:12px;color:#7a4800;">
+      <strong>The question that closes the eval comparison:</strong> <em>"When you outgrow this in 12 months, what does rearchitecting look like?"</em>
+    </div>
+    <div style="margin-top:10px;background:#f0f8ff;border:1px solid #c0dff7;border-radius:6px;padding:10px 14px;font-size:12px;color:#003d6b;">
+      <strong>BVA anchor:</strong> At 10% developer productivity gain + 20% compute savings, dbt platform returns ~8x the incremental investment over Snowflake dbt projects. <em>Break-even requires only a 1.4% efficiency gain.</em>
+    </div>
   </div>
 
   <!-- OVERVIEW -->
@@ -1073,6 +1096,216 @@
   <p class="footnote">dbt Labs internal FY26 sales enablement (May 2026). <strong>Internal use only.</strong> Pair with the <a href="index.html" style="color:#999">feature comparison</a>.</p>
 </div>
 </div><!-- /tab-starter -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 4 — AI Readiness
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-ai">
+<div class="content">
+
+  <div class="scenario-banner" style="background:#0d1117;border-color:#FF6245;color:#e0e0e0;">
+    <h2 style="color:#fff;">AI Readiness → dbt Enterprise</h2>
+    <p style="color:#aaa;">For prospects who believe their warehouse AI, BI tool, or dbt Core + Claude already solves the problem. The goal: expose the gap between AI that generates answers and AI that generates <em>trusted</em> answers. Three distinct plays — one per objection type.</p>
+  </div>
+
+  <!-- WHICH SCENARIO -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:24px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--orange);margin-bottom:10px;">Diagnose before you respond — three distinct situations</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div style="background:var(--bg);border-radius:8px;padding:12px;border-top:3px solid #555;">
+        <div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;margin-bottom:4px;">Rare</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">True Competitors</div>
+        <div style="font-size:11px;color:var(--muted);">Coalesce.io and other transformation tools. Argue ecosystem depth, AI architecture, compounding moat.</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px;border-top:3px solid #0d7a4a;">
+        <div style="font-size:11px;font-weight:700;color:#0d7a4a;text-transform:uppercase;margin-bottom:4px;">Most Common</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Layer Confusion</div>
+        <div style="font-size:11px;color:var(--muted);">Warehouse AI (Cortex/Genie) or BI tools. Prospect thinks one layer replaces another. Clarify: dbt is the transformation layer where data meets business.</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px;border-top:3px solid var(--red);">
+        <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:4px;">Most Dangerous</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px;">"Start Small" Delay</div>
+        <div style="font-size:11px;color:var(--muted);">dbt Core + Claude. Not choosing a competitor — deferring. Agree with it. Then sell the next chapter: "what happens when it works and needs to scale safely?"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO A: WAREHOUSE AI -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon" style="background:#e8f5f0;font-size:15px;">🏔️</div>
+      <h3>Layer confusion: warehouse AI</h3>
+      <span class="section-tag">Cortex · Genie · BigQuery AI</span>
+    </div>
+    <div class="opener-tip"><strong>The objection:</strong> <em>"Can't our warehouse AI just do this?"</em> — Warehouses are extending into the semantic and AI layer because that's where the margin is. But layer separation, ecosystem interoperability, and incentive misalignment mean they cannot replace dbt.</div>
+    <div style="background:#1a1a1a;color:#e0e0e0;border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:12px;font-style:italic;">"A warehouse will never build the feature that tells you to run less of it."</div>
+
+    <div class="question-card">
+      <div class="question-text">When Cortex or Genie returns a revenue number — where does your company's specific definition of revenue actually come from?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Cortex executes queries. It's not for defining what they should return. Your CFO's definition of revenue lives in dbt. Cortex queries data — dbt governs what it means. The wrong answer looks identical to the right one.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Your warehouse vendor profits when you run more compute. How does their AI tooling incentivize you to run less?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Incentive misalignment is structural. Snowflake/Databricks have no reason to build features that reduce consumption. dbt is the only layer designed to optimize how your warehouse is used — SAO, Slim CI, cost dashboards are all platform features.</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span><span class="tag tag-lock-in">Lock-in</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">If you moved from Snowflake to Databricks in two years — what happens to the AI context you've built inside that warehouse?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Warehouse-native AI context (Cortex, Genie) is locked to that vendor. dbt's semantic layer, lineage, and business logic are warehouse-agnostic and move with you. Your AI context shouldn't be a reason to stay on a platform.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span><span class="tag tag-ai">AI readiness</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When an AI agent running on your warehouse writes a new model or changes a transformation, how does the rest of your team know what broke downstream?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> AI-generated changes at the warehouse layer bypass dbt's lineage, tests, and governance entirely. dbt platform's context graph and model contracts are what make agentic development auditable and safe.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-ai">AI readiness</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Your warehouse AI returns answers — but does it know whether the underlying data passed its quality tests this morning? Does it know if the model is production-ready?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Warehouse AI operates at the storage and query layer. It has no access to dbt's test results, source freshness, run history, or model health. dbt platform is the structured context interface that tells AI what's trustworthy.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+  </div>
+
+  <!-- SCENARIO B: BI TOOL SEMANTIC LAYER -->
+  <div class="section" id="development">
+    <div class="section-header">
+      <div class="section-icon" style="background:#fef3e2;font-size:15px;">📊</div>
+      <h3>Layer confusion: BI tool semantic layers</h3>
+      <span class="section-tag">Omni · Sigma · Tableau · PowerBI Copilot</span>
+    </div>
+    <div class="opener-tip"><strong>The objection:</strong> <em>"Our BI tool has a semantic layer now. Why do we need dbt?"</em> — BI tools are investing heavily in semantic layers and MCP servers. But BI semantics are disconnected from transformation logic — and BI is the most volatile layer in the stack.</div>
+    <div style="background:#1a1a1a;color:#e0e0e0;border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:12px;font-style:italic;">"BI tools are where data gets consumed. dbt is where data gets trusted."</div>
+
+    <div class="question-card">
+      <div class="question-text">When you moved BI tools last time — and most organizations do every 3–5 years — what happened to your metric definitions?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> BI-native semantics get rebuilt every time you swap tools. Tableau → Looker → Sigma → Omni is a well-worn path. Semantics in dbt don't move — they live in code, version-controlled alongside the models that build the underlying data.</div>
+      <div class="tag-row"><span class="tag tag-lock-in">Lock-in</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Your BI tool has a semantic layer — is it version-controlled alongside the dbt models that build the underlying data?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> BI semantics live inside the BI tool, mostly disconnected from transformation logic. Models change, semantics don't follow. Your AI context gets locked into one vendor. dbt's Semantic Layer is open and warehouse-agnostic — co-located with the code that creates the data.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-ai">AI readiness</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When your BI AI assistant answers a business question, does it know whether the underlying data passed quality tests this morning?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> BI tools are read-only consumers. They have no access to dbt test results, source freshness, or run health. An AI answer from a BI tool is only as trustworthy as the untested data underneath it.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Every BI tool will have an MCP server soon — that's table stakes. But when an AI agent needs to build, propose, or merge a new model, which layer handles that?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> BI tools are largely read-only — agents can query but can't build. dbt platform's MCP server exposes lineage, write access, and governance context so AI agents can actually do work — not just answer questions.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-scale">Scale</span></div>
+    </div>
+  </div>
+
+  <!-- SCENARIO C: CORE + CLAUDE -->
+  <div class="section" id="orchestration">
+    <div class="section-header">
+      <div class="section-icon" style="background:#fff0f0;font-size:15px;">⏳</div>
+      <h3>"Start small" delay: dbt Core + Claude</h3>
+      <span class="section-tag">The most important conversation — and the easiest to lose</span>
+    </div>
+    <div class="opener-tip"><strong>The objection:</strong> <em>"We'll just use dbt Core + Claude — why pay for Platform?"</em> — This is NOT a competitive choice, it's a timing decision. <strong>Don't argue against Core. Agree with it. Then sell the next chapter.</strong> "Core + Claude gets you to the proof of concept. Enterprise Platform is what makes it safe to scale."</div>
+
+    <div class="question-card">
+      <div class="question-text">When an AI agent modifies a shared model, how does your team know what broke for downstream consumers?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Core has no cross-team lineage governance, no model contracts enforcement across projects, and no audit trail for agent actions. At scale, agents changing models without guardrails creates silent failures across every downstream consumer.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">What access controls do you have on what your AI agent can touch in your dbt pipeline?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Core has no RBAC, no model-level access controls, and no environment isolation. An AI agent with Core access has access to everything. dbt platform's RBAC and governance layer is what makes agentic development safe to deploy broadly.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How would you audit what a Claude agent did to your models overnight?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Core has no audit log. If an AI agent made changes overnight, you have no record of what ran, what changed, or what the intent was. dbt platform provides a full audit trail of every action — human or agent.</div>
+      <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">How could you prove that Claude is using the exact same version of Revenue that powers your KPI dashboard in BI?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without dbt's Semantic Layer, there's no deterministic interface between AI and metric definitions. Claude uses whatever it infers from your schema — which may or may not match your CFO's approved definition. dbt Semantic Layer is the provable link.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">"Core is free — we'll start there and upgrade later." Smart. But what happens when it works?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> When agents make changes at speed across teams — how does your governance hold up? Building auth, RBAC, audit logs, cross-project lineage on top of Core yourself is 10–15 months of engineering, then maintaining it across every dbt upgrade. Or deploy Platform in weeks.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-infra">Ops burden</span></div>
+    </div>
+  </div>
+
+  <!-- MCP SERVER -->
+  <div class="section" id="cicd">
+    <div class="section-header">
+      <div class="section-icon" style="background:#e8f0ff;font-size:15px;">🔌</div>
+      <h3>MCP server &amp; AI agent connectivity</h3>
+      <span class="section-tag">Claude · Cursor · GitHub Copilot · Any agent</span>
+    </div>
+    <div class="opener-tip"><strong>Opening frame:</strong> "Are you connecting any AI coding tools to your dbt project today? How does that work?"</div>
+
+    <div class="question-card">
+      <div class="question-text">How are your AI agents — Claude, Cursor, GitHub Copilot — connecting to your dbt project today?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt platform's hosted remote MCP server lets any AI agent connect directly — reading lineage, writing models, triggering jobs — with full authentication and governance. Without it, agents are pattern-matching against schema names with no business context.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-dx">Dev experience</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">When an AI agent generates a new model in your project, does it have awareness of your full project graph — what already exists, what would break, what it should reference?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> The dbt MCP server exposes the full project context graph to AI agents. Without it, agents write models in isolation — they can't see upstream dependencies, existing tests, or downstream impact. Cortex Code has the same gap: it can write models but lacks cross-project lineage context.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">AI runs on tokens, and token costs are exploding. Without structured context, every AI question becomes an exploration. How are you managing that cost?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without deterministic interfaces (Semantic Layer + MCP), an AI question like "what's our revenue this quarter?" triggers a multi-step exploration: find tables, try joins, generate SQL, get errors, try again. With dbt's Semantic Layer via MCP: one tool call, governed answer, done. Fewer tokens. Right answer.</div>
+      <div class="tag-row"><span class="tag tag-cost">Cost</span><span class="tag tag-ai">AI readiness</span></div>
+    </div>
+  </div>
+
+  <!-- AI GOVERNANCE -->
+  <div class="section" id="governance">
+    <div class="section-header">
+      <div class="section-icon" style="background:#fdf2ff;font-size:15px;">🏛️</div>
+      <h3>AI governance &amp; data quality</h3>
+      <span class="section-tag">The foundation AI needs to not fail</span>
+    </div>
+    <div style="background:#1a1a1a;color:#e0e0e0;border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:12px;font-style:italic;">"AI doesn't replace the need for dbt. It multiplies the consequences of not having it. An ungoverned metric used to be a local problem. AI turns it into an enterprise-wide truth."</div>
+
+    <div class="question-card">
+      <div class="question-text">80% of AI projects fail — mostly from bad data. What's your data quality strategy going into your AI initiatives?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> AI doesn't fix bad data — it scales it confidently at compute speed across every dashboard, Slack bot, auto-report, and stakeholder. dbt's test results, source freshness, and model contracts are the quality layer that makes AI outputs trustworthy.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">Only 12% of companies have a dedicated AI governance framework — does yours? And how does dbt fit into it?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt platform is the structured context interface for AI: Quality &amp; Reliability (test results, source freshness, run results), Business Context (Semantic Layer, model contracts, lineage), and Governance &amp; Access (Mesh, RBAC, SSO, access token scoping). It's the foundation any AI governance framework needs.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span><span class="tag tag-security">Security</span></div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-text">AI makes writing SQL and building models cheaper — so what becomes your competitive moat? What's harder to replicate than the code itself?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> From the deck: when AI makes execution cheap, foundations become the moat — authoritative business logic (your CFO's definition of revenue), cross-team lineage awareness, semantic consistency, governance &amp; contracts, auditability. All of that lives in dbt. AI can replicate SQL syntax. It can't replicate what someone sat down, argued out, and wrote down.</div>
+      <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-governance">Governance</span></div>
+    </div>
+  </div>
+
+  <p class="footnote">dbt Labs internal FY26 AI Sales Enablement (May 2026). <strong>Internal use only.</strong> Pair with the <a href="index.html" style="color:#999">feature comparison</a>.</p>
+</div>
+</div><!-- /tab-ai -->
 
 
 <script>
