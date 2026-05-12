@@ -391,7 +391,7 @@
       <span class="sub">The next-generation dbt execution engine delivering faster builds, improved performance, and real-time feedback.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake offers a limited Beta Fusion experience on Snowflake only. dbt platform delivers the full Fusion experience across all supported warehouses.</span></span>
     </td>
-    <td class="check-cell"><span class="tag tag-snow">Beta · Snowflake only</span></td>
+    <td class="check-cell"><span class="tag tag-snow">GA · Snowflake only</span></td>
     <td class="check-cell"><span class="no">—</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
@@ -562,7 +562,7 @@
       <span class="sub">Check whether source data has been updated recently before running downstream transformations.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td>
-    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="tag tag-green">CLI only</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell col-ent"><span class="yes">✓</span></td>
@@ -593,7 +593,7 @@
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Defers against production state so only modified models run on a PR — avoids a full-DAG compute cost on every pull request. Not available in Snowflake dbt projects.</span></span>
     </td>
     <td class="check-cell"><span class="no">—</span></td>
-    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="tag tag-green">Manual (--state flag)</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell col-ent"><span class="yes">✓</span></td>
@@ -606,7 +606,7 @@
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">State-based test selection — only tests models changed in the PR. Snowflake dbt projects runs the full test suite on every PR.</span></span>
     </td>
     <td class="check-cell"><span class="no">—</span></td>
-    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="tag tag-green">Manual (--state flag)</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell col-ent"><span class="yes">✓</span></td>
@@ -660,7 +660,7 @@
     <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-versions/cloud-release-tracks" target="_blank" class="feature-link">Latest</a>
       <span class="sub">Continuous access to the newest dbt platform features, ahead of open-source dbt Core releases.</span>
     </td>
-    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="tag tag-green">Self-managed versioning</span></td>
     <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
@@ -728,7 +728,7 @@
     <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/build-and-view-your-docs" target="_blank" class="feature-link">dbt Docs hosting</a>
       <span class="sub">Auto-generate and host a searchable documentation site for your dbt project, accessible to your whole team.</span>
     </td>
-    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="tag tag-green">Local generation only</span></td>
     <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
@@ -768,7 +768,8 @@
       <span class="sub">Centrally define business metrics alongside your dbt models so every downstream tool queries the same trusted numbers.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Portable, code-versioned, warehouse-agnostic metric definitions. Not available in Snowflake dbt projects — Snowflake Semantic Views are locked to Snowflake and not portable across tools or platforms.</span></span>
     </td>
-    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="tag tag-green">Definitions only</span></td>
     <td class="check-cell"><span class="no">—</span></td>
     <td class="check-cell"><span class="tag tag-green">5k queries/mo</span></td>
     <td class="check-cell col-ent"><span class="tag tag-green">20k queries/mo</span></td>
@@ -902,7 +903,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label">RBAC
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/manage-access/about-user-access" target="_blank" class="feature-link">RBAC</a>
       <span class="sub">Grant users different levels of access to projects and environments based on their role in the organization.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">dbt-native model and environment permissions. Snowflake RBAC applies at the schema level only — not at the dbt model or column level.</span></span></td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -910,7 +911,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label">SCIM provisioning
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/platform/manage-access/sso-oauth-intro" target="_blank" class="feature-link">SCIM provisioning</a>
       <span class="sub">Automatically add, update, and remove dbt users when changes are made in your identity provider directory.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -918,7 +919,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label">Audit logging — 3-month retention
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/manage-access/audit-log" target="_blank" class="feature-link">Audit logging — 3-month retention</a>
       <span class="sub">Log all user and system actions in dbt for compliance, debugging, and security review.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -926,7 +927,7 @@
     <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label">Audit logging — unlimited retention
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/manage-access/audit-log" target="_blank" class="feature-link">Audit logging — unlimited retention</a>
       <span class="sub">Keep audit logs indefinitely for organizations with long-term compliance or legal hold requirements.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -934,7 +935,7 @@
     <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label">PrivateLink
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/secure/about-privatelink" target="_blank" class="feature-link">PrivateLink</a>
       <span class="sub">Route all traffic between dbt and your data platform over a private network, bypassing the public internet entirely.</span>
     </td>
     <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
@@ -942,7 +943,7 @@
     <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
   </tr>
   <tr class="feature-row">
-    <td class="feature-label">IP allowlisting
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/secure/ip-restrictions" target="_blank" class="feature-link">IP allowlisting</a>
       <span class="sub">Restrict dbt platform access to requests originating from approved IP ranges only.</span>
       <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects is incompatible with IP restrictions — enabling IP restrictions on your dbt account breaks the Native App.</span></span></td>
     <td class="check-cell"><span class="tag tag-warn">Incompatible ⚠</span></td>
@@ -956,7 +957,7 @@
   </tr>
 
   <tr class="feature-row">
-    <td class="feature-label">Community (dbt Slack and forums)
+    <td class="feature-label"><a href="https://community.getdbt.com/" target="_blank" class="feature-link">Community (dbt Slack and forums)</a>
       <span class="sub">Access dbt's global community of 100,000+ practitioners via Slack and the dbt Community Forum.</span>
     </td>
     <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
