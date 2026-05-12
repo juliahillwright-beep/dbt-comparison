@@ -5,920 +5,1098 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>dbt Platform — Feature Comparison</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6245;
+      --green:  #0d7a4a;
+      --snow:   #0070c0;
+      --purple: #7c3aed;
+      --red:    #c2290a;
+      --blue:   #2563eb;
+      --border: #e5e5e2;
+      --bg:     #f9f9f8;
+      --text:   #1a1a1a;
+      --muted:  #666;
+      --ent-highlight: #fdf8ff;
+    }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #f9f9f8;
-      color: #1a1a1a;
+      background: var(--bg);
+      color: var(--text);
       font-size: 14px;
     }
 
+    /* ── PAGE HEADER ── */
     .page-header {
       background: #fff;
-      border-bottom: 1px solid #e5e5e2;
-      padding: 40px 32px 32px;
+      border-bottom: 1px solid var(--border);
+      padding: 40px 32px 0;
       text-align: center;
     }
-
-    .page-header .eyebrow {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #FF6245;
-      margin-bottom: 10px;
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--orange); margin-bottom: 10px;
     }
+    .page-header h1 { font-size: 30px; font-weight: 800; margin-bottom: 8px; }
+    .page-header > p { font-size: 15px; color: var(--muted); max-width: 600px; margin: 0 auto 20px; line-height: 1.6; }
 
-    .page-header h1 {
-      font-size: 32px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 10px;
-      line-height: 1.2;
-    }
-
-    .page-header p {
-      font-size: 15px;
-      color: #666;
-      max-width: 680px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
+    /* ── NOTICE ── */
     .notice {
-      background: #fff8f0;
-      border: 1px solid #ffd199;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 13px;
-      color: #7a4800;
-      max-width: 900px;
-      margin: 20px auto 0;
-      text-align: left;
+      background: #fff8f0; border: 1px solid #ffd199; border-radius: 8px;
+      padding: 10px 16px; font-size: 12px; color: #7a4800;
+      max-width: 980px; margin: 0 auto 20px; text-align: left; line-height: 1.6;
     }
+    .notice strong { font-weight: 700; }
 
-    .notice strong { font-weight: 600; }
-
-    .table-wrapper {
-      overflow-x: auto;
-      padding: 32px 16px 64px;
-      max-width: 1280px;
-      margin: 0 auto;
+    /* ── STAT PILLARS ── */
+    .pillars-wrap {
+      max-width: 980px; margin: 0 auto 0; padding: 0 0 24px;
     }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px #e5e5e2;
+    .pillars-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--orange); margin-bottom: 10px;
     }
+    .pillars { display: flex; gap: 12px; flex-wrap: wrap; }
+    .pillar {
+      flex: 1; min-width: 160px; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px;
+    }
+    .pillar-stat { font-size: 22px; font-weight: 800; color: var(--green); }
+    .pillar-title { font-size: 12px; font-weight: 700; margin: 2px 0; }
+    .pillar-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
 
-    /* ── Tier header row ── */
+    /* ── JUMP NAV ── */
+    .jump-nav {
+      background: #fff; border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: center; gap: 0; overflow-x: auto; padding: 0 24px;
+      position: sticky; top: 0; z-index: 20;
+    }
+    .jump-nav a {
+      display: block; padding: 11px 14px; font-size: 12px; font-weight: 600;
+      color: var(--muted); text-decoration: none; white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+    }
+    .jump-nav a:hover { color: var(--text); border-color: var(--orange); }
+
+    /* ── TABLE WRAPPER ── */
+    .table-wrap { overflow-x: auto; padding: 24px 16px 64px; max-width: 1280px; margin: 0 auto; }
+
+    /* ── TABLE ── */
+    /* overflow:hidden lives on .table-inner so it doesn't block JS sticky */
+    .table-inner { border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08), 0 0 0 1px var(--border); }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+
+    /* ── TIER HEADER (JS-controlled sticky — see script) ── */
     thead tr.tier-row th {
-      padding: 20px 12px 16px;
-      text-align: center;
-      border-bottom: 2px solid #e5e5e2;
-      vertical-align: bottom;
+      background: #fff; padding: 18px 10px 14px; text-align: center;
+      border-bottom: 2px solid var(--border); vertical-align: bottom;
     }
-
-    thead tr.tier-row th:first-child {
-      text-align: left;
-      width: 240px;
-      min-width: 180px;
+    thead tr.tier-row.is-stuck th {
+      box-shadow: 0 3px 10px rgba(0,0,0,.1);
     }
+    thead tr.tier-row th:first-child { text-align: left; width: 230px; min-width: 190px; }
 
-    .tier-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 20px;
-      margin-bottom: 6px;
-    }
+    /* Enterprise highlight — explicit background needed for sticky to render correctly */
+    thead tr.tier-row th.col-ent { background: var(--ent-highlight); }
+    tbody td.col-ent { background: var(--ent-highlight); }
 
-    .badge-core      { background:#f0f0ef; color:#555; }
-    .badge-snow      { background:#e0f3ff; color:#0070c0; }
-    .badge-teams     { background:#e8f0ff; color:#2563eb; }
-    .badge-starter   { background:#edfaf3; color:#0d7a4a; }
-    .badge-ent       { background:#f3eeff; color:#7c3aed; }
-    .badge-entplus   { background:#fff0ee; color:#c2290a; }
+    /* ── TIER ROW LABELS ── */
+    .tier-badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: 700; border-radius: 4px; margin-bottom: 4px; }
+    .badge-snow { background: #e0efff; color: var(--snow); }
+    .badge-core { background: #eff4f0; color: var(--green); }
+    .badge-teams { background: #fff0f5; color: var(--purple); }
+    .badge-starter { background: #eff4f0; color: var(--green); }
+    .badge-ent { background: #e0efff; color: var(--snow); }
+    .badge-entplus { background: #ffe0cc; color: var(--orange); }
+    .rec-badge { display: block; background: var(--orange); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+    .tier-name { display: block; font-size: 15px; font-weight: 700; margin: 2px 0; }
+    .tier-sub { display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .tier-price { display: block; font-size: 12px; font-weight: 600; color: #1a1a1a; }
 
-    .tier-name {
-      font-size: 14px;
-      font-weight: 700;
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .tier-sub {
-      font-size: 11px;
-      color: #888;
-      display: block;
-      line-height: 1.4;
-    }
-
-    /* ── Category header rows ── */
-    tr.category-row td {
-      background: #f4f4f2;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: #777;
-      padding: 8px 16px;
-      border-top: 1px solid #e5e5e2;
-    }
-
-    /* ── Overview / pricing rows ── */
+    /* ── OVERVIEW ROWS ── */
     tr.overview-row td {
-      padding: 10px 12px;
-      text-align: center;
-      border-bottom: 1px solid #f0f0ee;
-      font-size: 12px;
-      color: #444;
-      vertical-align: top;
-      line-height: 1.4;
+      padding: 9px 10px; text-align: center; border-bottom: 1px solid #f0f0ee;
+      font-size: 11px; color: #555; vertical-align: top; line-height: 1.4;
     }
+    tr.overview-row td:first-child { text-align: left; font-size: 12px; font-weight: 600; color: var(--text); }
 
-    tr.overview-row td:first-child {
-      text-align: left;
-      font-size: 13px;
-      color: #1a1a1a;
+    /* ── FEATURE LINKS ── */
+    a.feature-link {
+      color: var(--text); text-decoration: none;
+      border-bottom: 1px solid transparent; transition: border-color .15s, color .15s;
     }
+    a.feature-link:hover { color: var(--orange); border-bottom-color: var(--orange); }
 
-    /* ── Feature rows ── */
-    tr.feature-row td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #f0f0ee;
-      vertical-align: middle;
+    /* ── FEATURE ROWS ── */
+    td.feature-label { font-weight: 600; padding: 12px 10px; vertical-align: top; font-size: 13px; }
+    td.feature-label .sub { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+    td.check-cell { text-align: center; padding: 12px 10px; font-size: 13px; width: 90px; }
+    .yes { color: var(--green); font-weight: 700; }
+    .no { color: #999; font-size: 12px; }
+    .tag { display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .tag-snow { background: #e0efff; color: var(--snow); }
+    .tag-green { background: #e8f5f0; color: var(--green); }
+    .tag-warn { background: #ffeaa7; color: #664d03; }
+
+    /* ── CATEGORY ROWS ── */
+    tr.category-row { background: #f5f5f4; cursor: pointer; }
+    tr.category-row td { padding: 0; border: none; }
+    tr.category-row.collapsed + tr,
+    tr.category-row.collapsed + tr ~ tr:not(.category-row) { display: none; }
+    .cat-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 10px; font-size: 13px; font-weight: 700; color: #1a1a1a; user-select: none; }
+    .chevron { font-size: 12px; transition: transform .2s; }
+    .category-row.collapsed .chevron { transform: scaleY(-1); }
+
+    /* ── BORDERS ── */
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr.category-row { border-bottom: 2px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+
+    /* ── INFO TOOLTIP ── */
+    .info-wrap { display: inline-flex; align-items: center; margin-left: 6px; position: relative; cursor: help; }
+    .info-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: #e5e5e2; color: #666; font-size: 11px; font-weight: 700; }
+    .tooltip {
+      position: fixed; background: #1a1a1a; color: #fff; padding: 8px 10px;
+      border-radius: 4px; font-size: 12px; font-weight: 400; max-width: 200px; line-height: 1.5;
+      opacity: 0; visibility: hidden; transition: opacity .15s;
+      z-index: 100; pointer-events: none; white-space: normal;
     }
-
-    tr.feature-row:last-child td { border-bottom: none; }
-    tr.feature-row:hover { background: #fafaf9; }
-
-    td.feature-label {
-      font-size: 13px;
-      color: #1a1a1a;
-      line-height: 1.4;
+    .tooltip::before {
+      content: ''; position: absolute; width: 6px; height: 6px; background: #1a1a1a; border-radius: 1px;
+      left: 50%; transform: translateX(-50%);
+      top: -4px;
     }
+    .tooltip[style*="--arrow-top"]::before { top: auto; bottom: -4px; }
+    .info-wrap:hover .tooltip { opacity: 1; visibility: visible; }
 
-    td.feature-label .sub {
-      font-size: 11px;
-      color: #888;
-      margin-top: 2px;
-      display: block;
-    }
+    /* ── FOOTNOTE ── */
+    .footnote { font-size: 11px; color: #999; margin-top: 20px; line-height: 1.7; text-align: center; }
+    .footnote a { color: #999; }
 
-    td.check-cell {
-      text-align: center;
-      font-size: 17px;
-      width: 110px;
-    }
-
-    /* icons */
-    .yes  { color: #0d7a4a; font-weight: 700; }
-    .no   { color: #d0d0cc; font-size: 15px; }
-    .limit {
-      font-size: 10px;
-      font-weight: 600;
-      color: #0d7a4a;
-      background: #edfaf3;
-      border-radius: 10px;
-      padding: 2px 7px;
-      white-space: nowrap;
-      display: inline-block;
-    }
-    .snow-partial {
-      font-size: 10px;
-      font-weight: 600;
-      color: #0070c0;
-      background: #e0f3ff;
-      border-radius: 10px;
-      padding: 2px 7px;
-      white-space: nowrap;
-      display: inline-block;
-    }
-
-    .footnote {
-      font-size: 12px;
-      color: #888;
-      margin-top: 20px;
-      line-height: 1.6;
-      text-align: center;
-    }
-
-    @media (max-width: 800px) {
+    @media (max-width: 860px) {
+      .pillars { flex-direction: column; }
+      .page-header { padding: 24px 16px 0; }
       thead tr.tier-row th { padding: 10px 6px 8px; }
-      tr.overview-row td, tr.feature-row td { padding: 8px 6px; }
-      td.feature-label { font-size: 12px; }
-      td.check-cell { width: 80px; }
+      td.check-cell { width: 70px; }
+      .jump-nav { padding: 0 8px; }
     }
   </style>
 </head>
 <body>
 
+<!-- ══════════ PAGE HEADER ══════════ -->
 <div class="page-header">
-  <div class="eyebrow">dbt Labs</div>
+  <div class="eyebrow">dbt Labs — Internal use only</div>
   <h1>How dbt platform compares</h1>
-  <p>A comprehensive feature breakdown across Snowflake dbt projects, dbt Core, dbt Teams (legacy), dbt Starter, dbt Enterprise, and dbt Enterprise+.</p>
-  <div class="notice">
-    <strong>Notes on naming &amp; Snowflake projects:</strong>
-    <em>dbt Teams</em> is the legacy plan renamed to <em>dbt Starter</em> in August 2023 — legacy customers retain original pricing and unlimited models (fair use).
-    <em>Snowflake dbt projects</em> refers to running dbt natively within Snowflake Workspaces (via the Snowflake Native App) — purchased through the Snowflake Marketplace. It is <strong>not</strong> a standalone dbt Labs plan; it requires an Enterprise-tier dbt account and is limited to Snowflake as the data platform.
+  <p>From Snowflake dbt projects to dbt Core to full platform — understand what each tier includes and when to upgrade.</p>
+
+  <div class="notice" style="margin-top:0">
+    <strong>Naming note:</strong> <em>dbt Teams</em> was renamed <em>dbt Starter</em> in August 2023; legacy customers keep original pricing and unlimited models (fair use).
+    <em>Snowflake dbt projects</em> runs dbt natively inside Snowflake Workspaces via the Snowflake Native App — it is not a standalone dbt Labs plan and requires an Enterprise-tier dbt account.
+    Snowflake is a longstanding dbt Labs partner. <strong>Do not share this document with Snowflake.</strong>
+  </div>
+
+  <div class="pillars-wrap">
+    <div class="pillars-label">Why teams outgrow Snowflake dbt projects</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-stat">30–50%</div>
+        <div class="pillar-title">Compute reduction on dbt platform</div>
+        <div class="pillar-desc">If model 47 of 60 fails, Snowflake dbt projects reruns all 60. dbt platform's SAO reruns only what changed.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-stat">8+</div>
+        <div class="pillar-title">Data platforms supported</div>
+        <div class="pillar-desc">Snowflake dbt projects is Snowflake-only. M&amp;A or multi-cloud strategy means rebuilding your transformation layer.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-stat">6,000+</div>
+        <div class="pillar-title">dbt platform customers</div>
+        <div class="pillar-desc">A mature, production-proven platform. Snowflake's offering is a v1 product — and requires an active dbt Enterprise account to run.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-stat">Personal</div>
+        <div class="pillar-title">Snowflake Workspaces are not shared</div>
+        <div class="pillar-desc">Per-developer silos with no team visibility. Any developer with the right Snowflake role can execute against production — no approval gate, no audit trail.</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="table-wrapper">
-<table>
+<!-- ══════════ JUMP NAV ══════════ -->
+<nav class="jump-nav" id="jump-nav">
+  <a href="#sec-overview">Overview</a>
+  <a href="#sec-dev">Development</a>
+  <a href="#sec-orchestration">Orchestration</a>
+  <a href="#sec-cicd">CI/CD</a>
+  <a href="#sec-releases">Release tracks</a>
+  <a href="#sec-api">API &amp; integrations</a>
+  <a href="#sec-catalog">Catalog &amp; docs</a>
+  <a href="#sec-semantic">Semantic Layer</a>
+  <a href="#sec-governance">Governance</a>
+  <a href="#sec-security">Security</a>
+  <a href="#sec-support">Support</a>
+</nav>
+
+<!-- ══════════ TABLE ══════════ -->
+<div class="table-wrap">
+<div class="table-inner">
+<table id="comparison-table">
   <thead>
     <tr class="tier-row">
       <th></th>
       <th>
         <span class="tier-badge badge-snow">Snowflake</span>
         <span class="tier-name">Snowflake dbt projects</span>
-        <span class="tier-sub">Via Snowflake Marketplace<br>Requires Enterprise account</span>
+        <span class="tier-sub">Via Snowflake Marketplace</span>
+        <span class="tier-price">Snowflake pricing</span>
       </th>
       <th>
-        <span class="tier-badge badge-core">Open Source</span>
+        <span class="tier-badge badge-core">Open source</span>
         <span class="tier-name">dbt Core</span>
-        <span class="tier-sub">Free, self-managed</span>
+        <span class="tier-sub">Self-managed</span>
+        <span class="tier-price">Free</span>
       </th>
       <th>
         <span class="tier-badge badge-teams">Legacy</span>
         <span class="tier-name">dbt Teams</span>
-        <span class="tier-sub">Renamed → Starter</span>
+        <span class="tier-sub">Legacy → now Starter</span>
+        <span class="tier-price">Legacy pricing</span>
       </th>
       <th>
         <span class="tier-badge badge-starter">Cloud</span>
         <span class="tier-name">dbt Starter</span>
-        <span class="tier-sub">$100/seat/mo (or $330 annual)</span>
+        <span class="tier-sub">Formerly Teams</span>
+        <span class="tier-price">$100 / seat / mo</span>
       </th>
-      <th>
+      <th class="col-ent">
+        <span class="rec-badge">Most popular</span>
         <span class="tier-badge badge-ent">Cloud</span>
         <span class="tier-name">dbt Enterprise</span>
-        <span class="tier-sub">Custom pricing</span>
+        <span class="tier-sub">For production data teams</span>
+        <span class="tier-price">Custom pricing</span>
       </th>
       <th>
         <span class="tier-badge badge-entplus">Cloud</span>
         <span class="tier-name">dbt Enterprise+</span>
-        <span class="tier-sub">Custom pricing</span>
+        <span class="tier-sub">Business-critical deployments</span>
+        <span class="tier-price">Custom pricing</span>
       </th>
     </tr>
   </thead>
   <tbody>
 
-    <!-- ══════════════════ PLAN OVERVIEW ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Plan overview</td></tr>
+  <!-- ═══ PLAN OVERVIEW ═══ -->
+  <tr class="category-row" data-section="sec-overview" id="sec-overview">
+    <td colspan="7"><div class="cat-inner">Plan overview <span class="chevron">▾</span></div></td>
+  </tr>
+  <tr class="overview-row">
+    <td>Seats</td>
+    <td>Snowflake users</td><td>Unlimited (local)</td><td>Unlimited</td>
+    <td>Up to 5 developer seats</td>
+    <td class="col-ent">Custom</td><td>Custom</td>
+  </tr>
+  <tr class="overview-row">
+    <td>Projects</td>
+    <td>1 (single Snowflake account)</td><td>Unlimited (local)</td><td>1</td><td>1</td>
+    <td class="col-ent">Up to 30</td><td>Unlimited</td>
+  </tr>
+  <tr class="overview-row">
+    <td>Models / month</td>
+    <td>Via Snowflake credits</td><td>Unlimited (local)</td><td>Unlimited (fair use)</td>
+    <td>15,000 incl.; $0.01 / extra</td>
+    <td class="col-ent">100,000 incl.; negotiated overages</td>
+    <td>100,000 incl.; negotiated overages</td>
+  </tr>
+  <tr class="overview-row">
+    <td>Queried metrics / month</td>
+    <td>—</td><td>—</td><td>—</td><td>5,000</td>
+    <td class="col-ent">20,000</td><td>20,000</td>
+  </tr>
+  <tr class="overview-row">
+    <td>Data platform support</td>
+    <td><strong style="color:#c00">Snowflake only</strong></td>
+    <td>All adapters</td><td>All adapters</td><td>All adapters</td>
+    <td class="col-ent">All adapters (8+)</td><td>All adapters (8+)</td>
+  </tr>
+  <tr class="overview-row">
+    <td>Billing</td>
+    <td>Snowflake pricing</td><td>Free</td><td>Seat-based (legacy)</td>
+    <td>Seats upfront + usage arrears</td>
+    <td class="col-ent">Annual invoice</td><td>Annual invoice</td>
+  </tr>
 
-    <tr class="overview-row">
-      <td class="feature-label">Included seats</td>
-      <td>Snowflake users (no separate seat cost)</td>
-      <td>Unlimited (self-managed)</td>
-      <td>Unlimited</td>
-      <td>Up to 5 developer seats</td>
-      <td>Custom</td>
-      <td>Custom</td>
-    </tr>
-    <tr class="overview-row">
-      <td class="feature-label">Projects</td>
-      <td>1 (single Snowflake account)</td>
-      <td>Unlimited (local)</td>
-      <td>1</td>
-      <td>1</td>
-      <td>Up to 30</td>
-      <td>Unlimited</td>
-    </tr>
-    <tr class="overview-row">
-      <td class="feature-label">Models built / month</td>
-      <td>Via Snowflake compute credits</td>
-      <td>Unlimited (local compute)</td>
-      <td>Unlimited (fair use)</td>
-      <td>15,000 included; $0.01/additional</td>
-      <td>100,000 included; negotiated overages</td>
-      <td>100,000 included; negotiated overages</td>
-    </tr>
-    <tr class="overview-row">
-      <td class="feature-label">Queried metrics / month</td>
-      <td>—</td>
-      <td>—</td>
-      <td>—</td>
-      <td>5,000 included</td>
-      <td>20,000 included</td>
-      <td>20,000 included</td>
-    </tr>
-    <tr class="overview-row">
-      <td class="feature-label">Data platform support</td>
-      <td>Snowflake only</td>
-      <td>All supported adapters</td>
-      <td>All supported adapters</td>
-      <td>All supported adapters</td>
-      <td>All supported adapters</td>
-      <td>All supported adapters</td>
-    </tr>
-    <tr class="overview-row">
-      <td class="feature-label">Billing model</td>
-      <td>Built into Snowflake pricing</td>
-      <td>Free / open source</td>
-      <td>Seat-based (legacy)</td>
-      <td>Seats upfront + usage in arrears</td>
-      <td>Annual invoice; monthly arrears for overages</td>
-      <td>Annual invoice; monthly arrears for overages</td>
-    </tr>
+  <!-- ═══ DEVELOPMENT ═══ -->
+  <tr class="category-row" data-section="sec-dev" id="sec-dev">
+    <td colspan="7"><div class="cat-inner">Development <span class="chevron">▾</span></div></td>
+  </tr>
 
-    <!-- ══════════════════ DEVELOPMENT ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Development</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/core/installation-overview" target="_blank" class="feature-link">dbt CLI</a>
+      <span class="sub">Develop, test, run, and version-control dbt projects and commands directly from the command line.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Command-line interface for local development and scripting</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">dbt CLI<span class="sub">Command-line interface for local development</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Browser-based IDE<span class="sub">Build, test &amp; run dbt models in-browser</span></td>
-      <td class="check-cell"><span class="snow-partial">Snowflake Workspaces</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">VS Code extension<span class="sub">dbt Power User and official dbt extension</span></td>
-      <td class="check-cell"><span class="snow-partial">≤15 users</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Canvas<span class="sub">Drag-and-drop visual model editor</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Copilot — basic<span class="sub">AI code generation, docs &amp; test scaffolding</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="limit">100 actions/mo</span></td>
-      <td class="check-cell"><span class="limit">5,000 actions/mo</span></td>
-      <td class="check-cell"><span class="limit">5,000 actions/mo</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Copilot — advanced<span class="sub">Natural language in Canvas; Bring Your Own Key (BYOK)</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Bring Your Own Key (BYOK) for Copilot<span class="sub">Use your own OpenAI or Azure OpenAI API key</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Fusion engine access<span class="sub">Run models with the Fusion execution engine</span></td>
-      <td class="check-cell"><span class="snow-partial">Beta · Snowflake only</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Autocomplete &amp; model preview in IDE<span class="sub">IntelliSense-style completion; inline data previews</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Environment variable support<span class="sub">Inject env vars into dbt project configuration</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/dbt-cloud-ide/develop-in-the-cloud" target="_blank" class="feature-link">Browser-based IDE</a>
+      <span class="sub">Build, test, run, and version-control dbt projects in your browser — no local setup required.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">In-browser development with autocomplete, model preview, and dbt debug support. Snowflake Workspaces are personal and cannot be shared across the team.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Snowflake Workspaces (personal only)</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ DEPLOYMENT & ORCHESTRATION ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Deployment &amp; orchestration</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/dbt-cloud-ide/develop-in-the-cloud" target="_blank" class="feature-link">Shared team workspaces</a>
+      <span class="sub">Collaborative environments visible and accessible across the team, not siloed per developer.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Environments visible and shared across the team. Snowflake Workspaces are siloed per developer — a hard ceiling for collaboration at scale.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">Managed environments<span class="sub">Separate dev and production environments with isolation</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Job scheduling<span class="sub">Cron, day-of-week, and time-of-day triggers</span></td>
-      <td class="check-cell"><span class="snow-partial">Via Snowflake Tasks</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Webhook &amp; API-triggered runs<span class="sub">Trigger jobs from external systems</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Continuous Integration (CI)<span class="sub">Slim CI: run modified models on pull requests</span></td>
-      <td class="check-cell"><span class="snow-partial">Manual Git CI/CD only</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Advanced CI (change validation &amp; preview)<span class="sub">Preview environment diffs before merging</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">State-aware orchestration<span class="sub">Skip unchanged models; reduce warehouse compute costs</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Source freshness monitoring<span class="sub">Check and report on data source freshness</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Run history &amp; execution logs<span class="sub">Identify slow models and optimization opportunities</span></td>
-      <td class="check-cell"><span class="snow-partial">Basic via Snowflake UI</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Job chaining &amp; dependencies<span class="sub">Chain jobs and trigger downstream runs automatically</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Email &amp; Slack job notifications<span class="sub">Alerts on run success, failure, or cancellation</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/tools/vscode-extension" target="_blank" class="feature-link">VS Code extension</a>
+      <span class="sub">Connect your local VS Code editor to your dbt project with syntax highlighting, autocomplete, and AI assistance.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects caps VS Code extension at 15 users. dbt platform has no cap.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-warn">≤15 users</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ RELEASE TRACKS ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Release tracks</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/about-cloud/dbt-cloud-features" target="_blank" class="feature-link">dbt Fusion engine</a>
+      <span class="sub">The next-generation dbt execution engine delivering faster builds, improved performance, and real-time feedback.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake offers a limited Beta Fusion experience on Snowflake only. dbt platform delivers the full Fusion experience across all supported warehouses.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Beta · Snowflake only</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">Latest release track<span class="sub">Always on the most recent dbt release</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Compatible release track<span class="sub">Tested against in-support dbt Core versions</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Extended release track<span class="sub">Monthly cadence; more stability for production workloads</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Fallback release track<span class="sub">Emergency rollback to previous stable release</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/about-cloud/dbt-cloud-features" target="_blank" class="feature-link">dbt Canvas</a>
+      <span class="sub">A drag-and-drop visual interface for building and visualizing dbt models without writing code.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Drag-and-drop visual model editor. Enterprise only.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ GIT & VERSION CONTROL ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Git &amp; version control</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/use-dbt-copilot" target="_blank" class="feature-link">dbt Copilot — basic</a>
+      <span class="sub">An AI assistant that generates SQL, documentation, tests, and semantic models from natural language prompts.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">AI code generation, documentation scaffolding, and test suggestions.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="tag tag-green">100 actions/mo</span></td>
+    <td class="check-cell col-ent"><span class="tag tag-green">5,000 actions/mo</span></td>
+    <td class="check-cell"><span class="tag tag-green">5,000 actions/mo</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">GitHub integration</td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">GitLab integration</td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Azure DevOps integration</td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Multi-repo support<span class="sub">Connect multiple repositories to one project</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Private package support<span class="sub">Use packages from private Git repos</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/use-dbt-copilot" target="_blank" class="feature-link">dbt Copilot — advanced</a>
+      <span class="sub">Extends Copilot with natural language in Canvas and the option to supply your own LLM API key (BYOK).</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Includes natural language in Canvas, and Bring Your Own Key (BYOK) for OpenAI or Azure OpenAI.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ API & INTEGRATIONS ══════════════════ -->
-    <tr class="category-row"><td colspan="7">API &amp; integrations</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/build/environment-variables" target="_blank" class="feature-link">Environment variable support</a>
+      <span class="sub">Inject dynamic values into your dbt project configuration without hardcoding credentials or settings.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">dbt platform API access<span class="sub">Programmatic access to jobs, runs, metadata</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Discovery API (GraphQL)<span class="sub">Ad-hoc metadata queries and schema browsing</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Exposure orchestration<span class="sub">Visualize downstream dashboards; trigger proactive refreshes</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <!-- ═══ ORCHESTRATION ═══ -->
+  <tr class="category-row" data-section="sec-orchestration" id="sec-orchestration">
+    <td colspan="7"><div class="cat-inner">Deployment &amp; orchestration <span class="chevron">▾</span></div></td>
+  </tr>
 
-    <!-- ══════════════════ DOCUMENTATION & CATALOG ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Documentation &amp; data catalog</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/deploy-environments" target="_blank" class="feature-link">Managed environments</a>
+      <span class="sub">Separate dev and production environments so code changes can be tested safely before going live.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Isolated dev and production environments. Without this, any developer with the right Snowflake role can accidentally target production — no guardrails, no deployment history.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">dbt Docs hosting<span class="sub">Auto-generated, hosted project documentation</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Catalog — basic<span class="sub">Lineage, model details, and search (requires Fusion engine)</span></td>
-      <td class="check-cell"><span class="snow-partial">Embedded · read-only</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Catalog — advanced<span class="sub">Lineage Lenses, Auto Exposures, Health Tiles, column-level lineage</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Column-level lineage<span class="sub">Trace data flow at the column level across models</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/deploy-jobs" target="_blank" class="feature-link">Job scheduling</a>
+      <span class="sub">Run dbt projects on a recurring schedule triggered by time, day of week, or external events.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects schedules via Snowflake Tasks, requiring manual SQL setup with no native retry or alerting. dbt platform provides a full scheduling UI.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Via Snowflake Tasks (manual SQL)</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ SEMANTIC LAYER ══════════════════ -->
-    <tr class="category-row"><td colspan="7">dbt Semantic Layer</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/about-state" target="_blank" class="feature-link">State-aware orchestration (SAO)</a>
+      <span class="sub">Skips models whose upstream inputs haven't changed, reducing redundant warehouse compute.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Skips models whose upstream inputs haven't changed. Snowflake dbt projects does a full DAG rebuild on every run — if model 47 of 60 fails, it reruns all 60. Platform customers see 30–50% compute reduction. That's a number you can put in front of a CFO.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">Semantic Layer — basic<span class="sub">Define and query metrics from analytics tools</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="limit">5k queries/mo</span></td>
-      <td class="check-cell"><span class="limit">20k queries/mo</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Semantic Layer — advanced<span class="sub">Caching, fine-grained access controls</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Metrics integrations<span class="sub">Connect to Tableau, Looker, Hex, Mode, and more</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/deploy-jobs" target="_blank" class="feature-link">Native retry logic and failure handling</a>
+      <span class="sub">Automatically retries failed runs without custom engineering — no webhook configuration required.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake Tasks have no native retry — failure handling requires custom webhook setup. dbt platform handles retries natively with no engineering overhead.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ GOVERNANCE & MESH ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Governance &amp; dbt Mesh</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/webhooks" target="_blank" class="feature-link">Webhook and API-triggered runs</a>
+      <span class="sub">Trigger dbt job runs programmatically from external orchestration tools or data pipeline events.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">dbt Mesh — cross-project references<span class="sub">Reference models across multiple dbt projects</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Mesh — cross-platform<span class="sub">Reference models across different warehouse platforms</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Hybrid projects<span class="sub">Use dbt Core and dbt platform within the same org</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">dbt Insights<span class="sub">Interactive SQL query interface with visualizations and metadata</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Cost optimization dashboard<span class="sub">Identify high-cost models and warehouse usage patterns</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/deploy-jobs" target="_blank" class="feature-link">Job chaining and dependencies</a>
+      <span class="sub">Define run order so downstream jobs start automatically when upstream jobs complete successfully.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ SECURITY & ACCESS CONTROL ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Security &amp; access control</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/run-visibility" target="_blank" class="feature-link">Job run history UI</a>
+      <span class="sub">View model-level pass/fail status, run durations, and row counts without writing SQL queries.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Model-level pass/fail, run duration, and row counts. Snowflake dbt projects requires SQL queries against TASK_HISTORY — no UI.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">SQL only (TASK_HISTORY)</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">Multi-factor authentication (MFA)</td>
-      <td class="check-cell"><span class="snow-partial">Via Snowflake</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">SOC 2 Type II compliance</td>
-      <td class="check-cell"><span class="snow-partial">Via Snowflake</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Single Sign-On (SSO/SAML)<span class="sub">SAML/OIDC-based SSO with your identity provider</span></td>
-      <td class="check-cell"><span class="snow-partial">Via Snowflake</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Role-based access control (RBAC)<span class="sub">Fine-grained permissions across projects and environments</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">SCIM provisioning<span class="sub">Automate user provisioning/deprovisioning via your IdP</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Audit logging — 3-month retention<span class="sub">Log and review all user and system activity</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Audit logging — unlimited retention</td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">PrivateLink<span class="sub">Private network connectivity (no public internet traversal)</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">IP allowlisting / restrictions<span class="sub">Restrict dbt platform access to approved IP ranges</span></td>
-      <td class="check-cell"><span class="snow-partial">Incompatible ⚠</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/job-notifications" target="_blank" class="feature-link">Email and Slack notifications</a>
+      <span class="sub">Receive instant alerts when a job run succeeds, fails, or is cancelled.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects requires custom webhook setup for alerts. dbt platform has native email and Slack notifications built in.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-warn">Custom webhook required</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <!-- ══════════════════ SUPPORT ══════════════════ -->
-    <tr class="category-row"><td colspan="7">Support</td></tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/source-freshness" target="_blank" class="feature-link">Source freshness monitoring</a>
+      <span class="sub">Check whether source data has been updated recently before running downstream transformations.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
-    <tr class="feature-row">
-      <td class="feature-label">Community support (dbt Slack &amp; forums)</td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">24×5 email &amp; in-product chat support</td>
-      <td class="check-cell"><span class="snow-partial">Via Snowflake support</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Priority dbt Labs support with SLA</td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Dedicated account management</td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Implementation assistance<span class="sub">Onboarding help from dbt Labs solutions engineers</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
-    <tr class="feature-row">
-      <td class="feature-label">Security &amp; legal review</td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="no">—</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-      <td class="check-cell"><span class="yes">✓</span></td>
-    </tr>
+  <!-- ═══ CI/CD ═══ -->
+  <tr class="category-row" data-section="sec-cicd" id="sec-cicd">
+    <td colspan="7"><div class="cat-inner">CI/CD &amp; version control <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/git/git-configuration-in-dbt-cloud" target="_blank" class="feature-link">Git integration</a>
+      <span class="sub">Connect GitHub, GitLab, or Azure DevOps to trigger CI runs and manage branches directly in dbt.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects supports pull and push only — no branch management or conflict resolution. dbt platform provides full Git integration with GitHub, GitLab, and Azure DevOps.</span></span>
+    </td>
+    <td class="check-cell"><span class="tag tag-warn">Pull &amp; push only</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/continuous-integration" target="_blank" class="feature-link">Slim CI</a>
+      <span class="sub">Runs only modified models on a pull request by deferring to the production state — no full-DAG rebuild on every PR.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Defers against production state so only modified models run on a PR — avoids a full-DAG compute cost on every pull request. Not available in Snowflake dbt projects.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/continuous-integration" target="_blank" class="feature-link">Slimmer CI</a>
+      <span class="sub">Extends Slim CI to test only models changed in the PR, not the entire test suite.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">State-based test selection — only tests models changed in the PR. Snowflake dbt projects runs the full test suite on every PR.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/advanced-ci" target="_blank" class="feature-link">Advanced CI — compare changes before merge</a>
+      <span class="sub">Previews how model outputs differ before a PR is merged to catch regressions early.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Preview model output diffs and catch regressions before they hit production.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/continuous-integration" target="_blank" class="feature-link">Concurrent PR isolation</a>
+      <span class="sub">Each open pull request builds in its own isolated schema, preventing conflicts between simultaneous developers.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Multiple simultaneous PRs run in isolated schemas without conflicts. Not available in Snowflake dbt projects.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/build/packages" target="_blank" class="feature-link">Multi-repo and private package support</a>
+      <span class="sub">Reference dbt packages hosted in private Git repositories alongside public Hub packages.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ RELEASE TRACKS ═══ -->
+  <tr class="category-row" data-section="sec-releases" id="sec-releases">
+    <td colspan="7"><div class="cat-inner">Release tracks <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-versions/cloud-release-tracks" target="_blank" class="feature-link">Latest</a>
+      <span class="sub">Continuous access to the newest dbt platform features, ahead of open-source dbt Core releases.</span>
+    </td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-versions/cloud-release-tracks" target="_blank" class="feature-link">Compatible</a>
+      <span class="sub">Monthly updates aligned with supported dbt Core versions for teams that need predictable release stability.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-versions/cloud-release-tracks" target="_blank" class="feature-link">Extended</a>
+      <span class="sub">Receives the prior month's Compatible release, giving extra time to validate changes before adopting them.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Monthly cadence — more stability for production workloads.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-versions/cloud-release-tracks" target="_blank" class="feature-link">Fallback</a>
+      <span class="sub">Emergency rollback to the previous Extended release when a regression is suspected.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Emergency rollback to the previous stable release.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ API & INTEGRATIONS ═══ -->
+  <tr class="category-row" data-section="sec-api" id="sec-api">
+    <td colspan="7"><div class="cat-inner">API &amp; integrations <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-cloud-apis/overview" target="_blank" class="feature-link">dbt platform API</a>
+      <span class="sub">Programmatically manage accounts, jobs, runs, and metadata via REST API.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/dbt-cloud-apis/discovery-api" target="_blank" class="feature-link">Discovery API (GraphQL)</a>
+      <span class="sub">Query your project's metadata — models, tests, metrics, lineage, and execution history — via GraphQL.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/build/exposures" target="_blank" class="feature-link">Exposure orchestration</a>
+      <span class="sub">Map downstream BI tools as exposures and automatically refresh them when upstream models are updated.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Visualize downstream dashboards and trigger proactive data refreshes.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ CATALOG & DOCS ═══ -->
+  <tr class="category-row" data-section="sec-catalog" id="sec-catalog">
+    <td colspan="7"><div class="cat-inner">Documentation &amp; data catalog <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/build-and-view-your-docs" target="_blank" class="feature-link">dbt Docs hosting</a>
+      <span class="sub">Auto-generate and host a searchable documentation site for your dbt project, accessible to your whole team.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/explore-projects" target="_blank" class="feature-link">dbt Catalog — basic</a>
+      <span class="sub">Explore your project's resources, lineage, and latest production state across models, tests, sources, and metrics.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Lineage, model details, and search. Snowflake dbt projects surfaces an embedded read-only view only.</span></span></td>
+    <td class="check-cell"><span class="tag tag-snow">Embedded · read-only</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/explore-projects" target="_blank" class="feature-link">dbt Catalog — advanced</a>
+      <span class="sub">Adds Lineage Lenses, Auto Exposures, Health Tiles, and column-level lineage for deeper pipeline visibility.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Lineage Lenses, Auto Exposures, Health Tiles, and column-level lineage.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/column-level-lineage" target="_blank" class="feature-link">Column-level lineage</a>
+      <span class="sub">Trace exactly how data flows through individual columns across your entire pipeline.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ SEMANTIC LAYER ═══ -->
+  <tr class="category-row" data-section="sec-semantic" id="sec-semantic">
+    <td colspan="7"><div class="cat-inner">dbt Semantic Layer <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl" target="_blank" class="feature-link">Semantic Layer (MetricFlow)</a>
+      <span class="sub">Centrally define business metrics alongside your dbt models so every downstream tool queries the same trusted numbers.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Portable, code-versioned, warehouse-agnostic metric definitions. Not available in Snowflake dbt projects — Snowflake Semantic Views are locked to Snowflake and not portable across tools or platforms.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="tag tag-green">5k queries/mo</span></td>
+    <td class="check-cell col-ent"><span class="tag tag-green">20k queries/mo</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl" target="_blank" class="feature-link">Semantic Layer — advanced</a>
+      <span class="sub">Adds result caching and fine-grained access controls to the Semantic Layer for production scale.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Caching and fine-grained access controls.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/use-dbt-semantic-layer/dbt-sl" target="_blank" class="feature-link">Semantic Layer portability</a>
+      <span class="sub">MetricFlow is warehouse-agnostic — metric definitions work across any tool and platform, not locked to Snowflake Semantic Views.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Metrics work across any downstream tool and any warehouse. If your metric definitions are Snowflake-native, your AI outputs aren't trustworthy across tools.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/use-dbt-semantic-layer/avail-sl-integrations" target="_blank" class="feature-link">Metrics integrations</a>
+      <span class="sub">Connect the Semantic Layer to BI tools like Tableau, Looker, Hex, and Mode for consistent, governed metrics.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Connect to Tableau, Looker, Hex, Mode, and more.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ GOVERNANCE ═══ -->
+  <tr class="category-row" data-section="sec-governance" id="sec-governance">
+    <td colspan="7"><div class="cat-inner">Governance, dbt Mesh &amp; data contracts <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/deploy/deployment-approvals" target="_blank" class="feature-link">Deployment approvals and audit trail</a>
+      <span class="sub">Track who deployed what and when — every production change is logged with full history and attribution.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">With Snowflake dbt projects, anyone with the right role can execute against production — no approval gate, no deployment history, no record of who made the change that broke the dashboard. Trust is hard to earn and easy to lose.</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/build/model-contracts" target="_blank" class="feature-link">Model contracts</a>
+      <span class="sub">Declare column names, data types, and constraints in code so breaking changes are caught before reaching downstream consumers.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Enforce column names, data types, and constraints as versioned code. Available even in dbt Core.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/manage-access/model-access" target="_blank" class="feature-link">Model-level and column-level access control</a>
+      <span class="sub">Control which dbt users can view or modify specific models, beyond what warehouse-level permissions can provide.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">dbt-native permissions beyond Snowflake's schema-level RBAC only.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/govern-data-lineage-with-mesh" target="_blank" class="feature-link">dbt Mesh — cross-project</a>
+      <span class="sub">Reference models owned by other teams across separate dbt projects, enabling governed data sharing at scale.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Reference models across multiple dbt projects; scale governance across teams and domains.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/collaborate/govern-data-lineage-with-mesh" target="_blank" class="feature-link">dbt Mesh — cross-platform</a>
+      <span class="sub">Extend cross-project references across teams using different data warehouses or platforms.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Reference models across different warehouse platforms. Not possible in Snowflake dbt projects.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/about-cloud/hybrid-projects" target="_blank" class="feature-link">Hybrid projects</a>
+      <span class="sub">Run dbt Core and dbt platform projects within the same organization, sharing models across both environments.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Use dbt Core and dbt platform within the same org.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/governance/dbt-insights" target="_blank" class="feature-link">dbt Insights</a>
+      <span class="sub">An embedded analytics interface for querying your warehouse and exploring metadata without leaving dbt.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/governance/cost-optimization" target="_blank" class="feature-link">Cost optimization dashboard</a>
+      <span class="sub">Identify your most expensive models, track warehouse spend over time, and surface opportunities to reduce compute.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ SECURITY ═══ -->
+  <tr class="category-row" data-section="sec-security" id="sec-security">
+    <td colspan="7"><div class="cat-inner">Security &amp; access control <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/security/mfa" target="_blank" class="feature-link">MFA</a>
+      <span class="sub">Require a second form of authentication for all dbt platform logins.</span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Via Snowflake</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/security/soc2" target="_blank" class="feature-link">SOC 2 Type II</a>
+      <span class="sub">dbt platform has completed an independent SOC 2 Type II audit verifying its security, availability, and confidentiality controls.</span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Via Snowflake</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label"><a href="https://docs.getdbt.com/docs/cloud/security/sso-saml" target="_blank" class="feature-link">SSO / SAML</a>
+      <span class="sub">Authenticate users through your organization's identity provider (Okta, Microsoft Entra ID, etc.) via SAML or OIDC.</span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Via Snowflake</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">RBAC
+      <span class="sub">Grant users different levels of access to projects and environments based on their role in the organization.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">dbt-native model and environment permissions. Snowflake RBAC applies at the schema level only — not at the dbt model or column level.</span></span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">SCIM provisioning
+      <span class="sub">Automatically add, update, and remove dbt users when changes are made in your identity provider directory.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">Audit logging — 3-month retention
+      <span class="sub">Log all user and system actions in dbt for compliance, debugging, and security review.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">Audit logging — unlimited retention
+      <span class="sub">Keep audit logs indefinitely for organizations with long-term compliance or legal hold requirements.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">PrivateLink
+      <span class="sub">Route all traffic between dbt and your data platform over a private network, bypassing the public internet entirely.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">IP allowlisting
+      <span class="sub">Restrict dbt platform access to requests originating from approved IP ranges only.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake dbt projects is incompatible with IP restrictions — enabling IP restrictions on your dbt account breaks the Native App.</span></span></td>
+    <td class="check-cell"><span class="tag tag-warn">Incompatible ⚠</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="no">—</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+
+  <!-- ═══ SUPPORT ═══ -->
+  <tr class="category-row" data-section="sec-support" id="sec-support">
+    <td colspan="7"><div class="cat-inner">Support <span class="chevron">▾</span></div></td>
+  </tr>
+
+  <tr class="feature-row">
+    <td class="feature-label">Community (dbt Slack and forums)
+      <span class="sub">Access dbt's global community of 100,000+ practitioners via Slack and the dbt Community Forum.</span>
+    </td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">24x5 email and in-product chat
+      <span class="sub">Reach the dbt support team by email or in-product chat any time during weekday business hours.</span>
+    </td>
+    <td class="check-cell"><span class="tag tag-snow">Via Snowflake support</span></td>
+    <td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">Priority dbt Labs support with SLA
+      <span class="sub">Guaranteed response-time SLAs backed by the team that builds and maintains dbt — not a reseller.</span>
+      <span class="info-wrap"><span class="info-icon">i</span><span class="tooltip">Snowflake support for dbt is a Snowflake SE who learned dbt. dbt Labs support is the team that builds dbt and owns the roadmap. When production breaks, who do you call?</span></span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">Dedicated account management
+      <span class="sub">A named dbt Labs contact manages your account, monitors adoption, and coordinates escalations.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
+  <tr class="feature-row">
+    <td class="feature-label">Implementation assistance and security/legal review
+      <span class="sub">Hands-on onboarding from dbt Labs solutions engineers, plus review of security questionnaires and legal agreements.</span>
+    </td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell"><span class="no">—</span></td><td class="check-cell"><span class="no">—</span></td>
+    <td class="check-cell col-ent"><span class="yes">✓</span></td><td class="check-cell"><span class="yes">✓</span></td>
+  </tr>
 
   </tbody>
 </table>
+</div><!-- /.table-inner -->
 
 <p class="footnote">
-  Sources: <a href="https://www.getdbt.com/pricing" target="_blank">getdbt.com/pricing</a> ·
-  <a href="https://www.getdbt.com/product/how-dbt-platform-compares" target="_blank">how-dbt-platform-compares</a> ·
+  <a href="https://www.getdbt.com/pricing" target="_blank">getdbt.com/pricing</a> ·
   <a href="https://docs.getdbt.com/docs/cloud-integrations/snowflake-native-app" target="_blank">Snowflake Native App docs</a> ·
-  <a href="https://docs.snowflake.com/en/user-guide/data-engineering/dbt-projects-on-snowflake" target="_blank">Snowflake: dbt projects on Snowflake</a> ·
   <a href="https://docs.getdbt.com/docs/platform/billing" target="_blank">dbt billing docs</a> ·
-  <a href="https://docs.getdbt.com/faqs/Accounts/account-specific-features" target="_blank">account-specific features</a> ·
-  dbt Labs internal sales &amp; pricing documentation (May 2026).
-  Pricing and features subject to change — confirm with PMM before sharing externally.
-  <br><br>
-  <strong>Key:</strong>
-  <span class="snow-partial" style="font-size:11px;">Blue pill</span> = partial / conditional support &nbsp;·&nbsp;
-  <span style="color:#d0d0cc; font-size:14px;">—</span> = not available
+  dbt Labs internal FY26 platform value drivers &amp; sales enablement (May 2026).
+  <strong>Internal use only — do not share with Snowflake.</strong>
+  Confirm with PMM before sharing externally.
 </p>
 </div>
 
+<script>
+  // ── Tooltip positioning (fixed, viewport-aware) ──
+  document.querySelectorAll('.info-wrap').forEach(wrap => {
+    const tip = wrap.querySelector('.tooltip');
+    if (!tip) return;
+    wrap.addEventListener('mouseenter', () => {
+      // Briefly make visible but off-screen to measure dimensions
+      tip.style.visibility = 'hidden';
+      tip.style.opacity = '1';
+      tip.style.left = '0px';
+      tip.style.top = '0px';
+
+      const iconRect = wrap.getBoundingClientRect();
+      const tipW = tip.offsetWidth;
+      const tipH = tip.offsetHeight;
+
+      // Centre above the icon; flip below if not enough room
+      let left = iconRect.left + iconRect.width / 2 - tipW / 2;
+      let top  = iconRect.top - tipH - 10;
+      if (top < 8) { top = iconRect.bottom + 10; tip.style.setProperty('--arrow-top','true'); }
+
+      // Clamp within viewport horizontally
+      left = Math.max(8, Math.min(left, window.innerWidth - tipW - 8));
+
+      tip.style.left = left + 'px';
+      tip.style.top  = top  + 'px';
+      tip.style.visibility = 'visible';
+    });
+    wrap.addEventListener('mouseleave', () => {
+      tip.style.opacity = '0';
+      tip.style.visibility = 'hidden';
+    });
+  });
+
+  // ── Collapsible sections ──
+  document.querySelectorAll('tr.category-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const isCollapsed = row.classList.toggle('collapsed');
+      let next = row.nextElementSibling;
+      while (next && !next.classList.contains('category-row')) {
+        next.style.display = isCollapsed ? 'none' : '';
+        next = next.nextElementSibling;
+      }
+    });
+  });
+
+  // ── JS sticky tier header (CSS sticky breaks inside overflow-x:auto containers) ──
+  (function() {
+    const table  = document.getElementById('comparison-table');
+    const tierRow = table && table.querySelector('thead tr.tier-row');
+    const nav    = document.getElementById('jump-nav');
+    if (!tierRow || !nav) return;
+
+    function onScroll() {
+      const navBottom  = nav.getBoundingClientRect().bottom;
+      const tableTop   = table.getBoundingClientRect().top;
+      const tableBot   = table.getBoundingClientRect().bottom;
+      const rowH       = tierRow.getBoundingClientRect().height;
+
+      if (tableTop < navBottom && tableBot > navBottom + rowH) {
+        tierRow.style.transform = 'translateY(' + (navBottom - tableTop) + 'px)';
+        tierRow.classList.add('is-stuck');
+      } else {
+        tierRow.style.transform = '';
+        tierRow.classList.remove('is-stuck');
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // ── Jump nav active state on scroll ──
+  const sections = document.querySelectorAll('tr.category-row[id]');
+  const navLinks = document.querySelectorAll('.jump-nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.style.borderColor = 'transparent');
+        const active = document.querySelector(`.jump-nav a[href="#${entry.target.id}"]`);
+        if (active) { active.style.color = '#1a1a1a'; active.style.borderColor = '#FF6245'; }
+      }
+    });
+  }, { rootMargin: '-10% 0px -85% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
 </body>
 </html>
