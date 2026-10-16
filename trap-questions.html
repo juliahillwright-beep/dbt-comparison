@@ -190,6 +190,15 @@
     }
 
     @media (max-width: 640px) {
+      .tab-bar { overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
+      .tab-bar .tab-btn { white-space: nowrap; flex: 0 0 auto; }
+      .jump-nav { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; }
+      .content div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+      .section-header { flex-wrap: wrap; }
+      .section-tag { white-space: normal; margin-left: 0; }
+      .surfaces, .question-text { overflow-wrap: anywhere; }
+    }
+    @media (max-width: 640px) {
       .tab-btn { padding: 12px 14px; font-size: 12px; }
       .page-header { padding: 24px 16px 16px; }
     }
@@ -204,7 +213,7 @@
   <h1>Trap-setting discovery questions</h1>
   <p>Open-ended questions organized by competitive scenario. Don't open with feature comparisons — open with business value and let them describe the pain.</p>
   <div class="notice">
-    <strong>Framing principle:</strong> Move the conversation from "what does dbt platform have that X doesn't?" to "what does your data platform need to be ready for what's coming?" Feature differences are the <em>second</em> conversation. <strong>Do not share with Snowflake.</strong>
+    <strong>Framing principle:</strong> Move the conversation from "what does dbt platform have that X doesn't?" to "what does your data platform need to be ready for what's coming?" Feature differences are the <em>second</em> conversation. Snowflake and Databricks are partners — never position their native tooling as "worse than dbt"; position it as a solid starting point with a ceiling. <strong>Internal use only.</strong>
   </div>
 </div>
 
@@ -247,7 +256,7 @@
 
   <div class="scenario-banner banner-snow">
     <h2>Snowflake dbt projects → dbt Enterprise</h2>
-    <p>For prospects running dbt natively inside Snowflake Workspaces via the Snowflake Native App. Key themes: lock-in, compute waste, no managed CI/CD, personal workspaces that don't scale, and no dbt Labs support.</p>
+    <p>For prospects running dbt natively inside Snowflake (Workspaces + DBT PROJECT objects). Acknowledge it works for small, Snowflake-only teams that already know dbt. Key themes: lock-in, hand-built CI/CD and failure recovery that someone has to own, no cross-project governance, no in-editor diagnostics, and dbt-specific support that falls to the customer.</p>
   </div>
 
   <!-- UPGRADE TRIGGER LIST -->
@@ -293,13 +302,13 @@
 
     <div class="question-card">
       <div class="question-text">How are you tracking the cost of your dbt runs in Snowflake today — and is that number going up?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without state-aware orchestration, every run rebuilds the full DAG regardless of what changed. Platform customers typically see 30–50% compute reduction. That's a number you can put in front of a CFO.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt State skips unchanged models (15–30% average compute savings for design partners*) and is coming to Snowflake dbt Projects via a paid dbt Labs integration — so skipping isn't the differentiator. What is: Cost Insights showing credits saved per model and job, and on Snowflake every run holds a user-managed warehouse through parse and compile.</div>
       <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">How many people are actively developing in your dbt project today, and do you expect that to grow in the next 12 months?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no collaboration model. As teams grow, personal workspaces become a scaling ceiling — and VS Code is capped at 15 users.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Team size isn't the qualifier — dependencies between projects are. Snowflake dbt Projects has no cross-project ref, so another team's project is copied in as a local package and the copies drift. Shared workspaces exist now; the gap is PR creation, review, and CI, which all happen outside Snowflake.</div>
       <div class="tag-row"><span class="tag tag-scale">Scale</span></div>
     </div>
   </div>
@@ -315,25 +324,25 @@
 
     <div class="question-card">
       <div class="question-text">When two developers are working on the same dbt project simultaneously, how do they avoid stepping on each other's work?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces are personal and isolated — there's no shared visibility or team environment. Collaboration at scale structurally breaks down.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Shared workspaces are available in Snowflake, but PR creation, code review, and CI checks happen outside the tool, and concurrent runs against one project object need WRITEBACK = FALSE or distinct target paths or artifact writes collide.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
     </div>
 
     <div class="question-card">
-      <div class="question-text">How many of your developers are in VS Code versus the browser editor today?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> The official dbt VS Code extension is capped at 15 users in Snowflake dbt projects. Teams beyond that hit a hard ceiling with no path forward.</div>
+      <div class="question-text">When a developer writes a bad ref or a type mismatch, how long before they find out — as they type, or after the run?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces runs the dbt v2 engine as a runtime only — no language server, so no live diagnostics, autocomplete, or impact analysis in the editor, and no streaming output. Studio and the dbt VS Code extension expose v2's language server; that's where v2 feels different to a developer.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">Are your engineers using AI tools to write SQL or scaffold dbt models today? What does that workflow look like?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no Copilot, no BYOK, and no natural language in Canvas. The AI development experience simply doesn't exist there.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake offers Cortex Code in the Workspaces panel, but it reasons from what's synced to Snowflake rather than the dbt project's contracts, tests, and semantic definitions. dbt Wizard validates against lineage, contracts, and tests before showing the diff; Canvas adds natural language for analysts.</div>
       <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-dx">Dev experience</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">When a model fails or produces unexpected results, what does the debugging process look like for your team?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces lack autocomplete, inline previews, dbt debug support, and proper log visibility. Debugging is slow, manual, and frustrating at scale.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> In Snowflake, dbt debug isn't supported in any execution method, output appears only after the command completes, and logs and traces require an admin to set LOG_LEVEL/TRACE_LEVEL (a custom event table needs Enterprise Edition). Studio gives structured parse errors and live diagnostics as you type.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
     </div>
 
@@ -355,25 +364,25 @@
 
     <div class="question-card">
       <div class="question-text">If model 47 out of 60 in your DAG fails, what happens to the other 59 models the next time the job runs?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without state-aware orchestration, Snowflake dbt projects reruns all 60 models — even the 59 that didn't change. Platform customers see 30–50% compute reduction with SAO. That's a number you can put in front of a CFO.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without automatic retry, recovery is a manual dbt retry or a result:error+ rerun with imported state. dbt platform retries from the point of failure; with dbt State, unchanged models are skipped (15–30% average savings*) and Cost Insights shows what it saved.</div>
       <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">Walk me through how you schedule a dbt job today. What does the setup process actually look like?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects schedules via Snowflake Tasks, requiring manual SQL authoring with no retry logic, no native alerting, and no history UI.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt Projects schedules via Snowflake Tasks on a user-managed warehouse (no serverless option for dbt), with manual SQL setup, task-level alerts only, and no automatic retry.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-infra">Ops burden</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">When a production pipeline fails at 3am, how does your team find out — and what's the typical recovery time?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Tasks have no native alerting. Teams need custom webhooks or Snowflake Alerts just to get notified. dbt platform sends native email/Slack alerts with model-level context out of the box.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake alerts are task-level, built with Snowflake Alerts or notification integrations — nothing tells you which model failed. dbt platform sends native email, Slack, and Teams alerts with model-level context, and retries automatically.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-infra">Ops burden</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">If you need to check whether a job ran successfully last Tuesday, what does that look like today?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects requires SQL queries against TASK_HISTORY. dbt platform provides a full job run history UI with model-level pass/fail, duration, and row counts — no SQL required.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowsight's Transformation » dbt Projects view shows run history and per-model status, but Information Schema history is retained only 7 days (365 via Account Usage) and logs need event-table setup. dbt platform keeps account-wide history with model-level timing and row counts — ask "which model got 40% slower this quarter?"</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
     </div>
 
@@ -395,7 +404,7 @@
 
     <div class="question-card">
       <div class="question-text">What happens when a developer opens a pull request today — does anything run automatically to validate the change?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no managed CI. Every PR triggers a full DAG rebuild rather than running only the modified models via Slim CI — burning compute on unchanged work.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> CI on Snowflake dbt Projects is a GitHub Actions pipeline the customer writes and maintains. Slim CI works via SYSTEM$DBT_GET_LAST_SUCCESSFUL_RUN_TARGET but needs MONITOR on prod and a prod run in the last 7 days — it breaks when the window lapses. dbt platform triggers CI per PR, creates and drops a temp schema, and posts status back automatically.</div>
       <div class="tag-row"><span class="tag tag-cost">Cost</span><span class="tag tag-dx">Dev experience</span></div>
     </div>
 
@@ -407,13 +416,13 @@
 
     <div class="question-card">
       <div class="question-text">What happens when two developers have open PRs at the same time — do they ever conflict or block each other?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no concurrent PR isolation. Simultaneous PRs can overwrite each other's work in the same schema.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> In Snowflake, per-PR isolation is scripted — the pipeline creates and drops a database per PR — and concurrent runs against one project object need WRITEBACK = FALSE or distinct target paths. dbt platform does this automatically and cleans up on merge or close.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span><span class="tag tag-scale">Scale</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">How do you handle branch management and merge conflicts in your dbt project today?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake Workspaces support only pull and push — no branch management or conflict resolution. Full Git workflow requires the dbt platform.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Workspaces now supports branching, pull/push, and visual conflict resolution; PR creation and code review still happen outside Snowflake, and GitLab/Azure DevOps CI are in preview. dbt platform creates and reviews PRs in-product on GitHub, GitLab, Azure DevOps, and Bitbucket.</div>
       <div class="tag-row"><span class="tag tag-dx">Dev experience</span></div>
     </div>
   </div>
@@ -427,8 +436,8 @@
     </div>
 
     <div class="question-card">
-      <div class="question-text">When Snowflake updates the dbt version in their native app, does your team get to test that first — or does it just happen?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake controls the release cadence for Snowflake dbt projects. dbt platform gives teams the Compatible, Extended, and Fallback tracks to manage their own upgrade timing.</div>
+      <div class="question-text">Who decides which dbt version you run — and when Snowflake adds or retires one, does your team get to test first?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake pins the runtimes available (dbt 1.9.4 / 1.10.15 / 1.11.11 and dbt v2 preview builds, not the GA v2 build) and decides when they change. dbt platform gives teams Latest, Compatible, Extended, and Fallback release tracks to manage their own upgrade timing.</div>
       <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
     </div>
 
@@ -449,13 +458,13 @@
 
     <div class="question-card">
       <div class="question-text">When someone on your team needs to understand what a model does or where a table came from, where do they go?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects only surfaces an embedded read-only catalog view. dbt platform provides full hosted docs plus dbt Catalog with lineage, health tiles, and column-level detail.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake relies on Horizon Catalog, which isn't dbt-native: lineage is on materialized objects only, unavailable until the project has run, and the DAG view caps at 300 models. dbt Catalog adds tests, docs, macro context, health tiles, and cross-project lineage.</div>
       <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-scale">Scale</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">If a source column got renamed upstream, how would you find out which downstream models are affected?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Without column-level lineage, impact analysis is manual and error-prone. dbt Catalog advanced shows exactly which columns are affected — instantly.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Horizon column lineage covers materialized objects after a first run and stops at the project boundary. dbt Catalog shows column-level impact across projects, and Studio flags the break as you type.</div>
       <div class="tag-row"><span class="tag tag-governance">Governance</span></div>
     </div>
   </div>
@@ -470,7 +479,7 @@
 
     <div class="question-card">
       <div class="question-text">Where do your metric definitions live today — SQL files, BI tools, spreadsheets, or somewhere else?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects has no Semantic Layer. MetricFlow in dbt centralizes definitions in code so every downstream tool queries the same number.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt Projects has no dbt Semantic Layer; Snowflake Semantic Views are database objects managed outside the project's version control and CI. MetricFlow centralizes definitions in code, tested with the models underneath, so every tool and agent (via MCP) gets the same number.</div>
       <div class="tag-row"><span class="tag tag-governance">Governance</span><span class="tag tag-ai">AI readiness</span></div>
     </div>
 
@@ -504,7 +513,7 @@
 
     <div class="question-card">
       <div class="question-text">If your organization grew to five separate data teams, each with their own dbt project, how would they safely share and reuse models?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt projects is limited to a single project per Snowflake account — dbt Mesh is structurally impossible. Multi-team scale requires dbt Enterprise.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake dbt Projects has no cross-project ref — another team's project is copied into yours as a local package and the copies drift; nobody owns the shared model. dbt Mesh gives public/protected/private models and versioned contracts across projects.</div>
       <div class="tag-row"><span class="tag tag-scale">Scale</span><span class="tag tag-governance">Governance</span></div>
     </div>
 
@@ -536,8 +545,8 @@
     </div>
 
     <div class="question-card">
-      <div class="question-text">Do you have IP restrictions enabled on your dbt account today?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> IP restrictions are incompatible with the Snowflake Native App — enabling them breaks it entirely. This is a known limitation with no workaround in Snowflake dbt projects.</div>
+      <div class="question-text">Can any developer's role write to your prod schema today?</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> In Snowflake dbt Projects, prod safety depends on warehouse RBAC discipline — a developer with prod grants can build to prod from a workspace, and Git is optional. dbt platform's IDE can only write to dev; the boundary is enforced by the tool, not by getting every grant right.</div>
       <div class="tag-row"><span class="tag tag-security">Security</span></div>
     </div>
   </div>
@@ -553,13 +562,13 @@
 
     <div class="question-card">
       <div class="question-text">When production breaks, who do you call — and what's the actual escalation path?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake support for dbt is a Snowflake SE who learned dbt. dbt Labs support is the team that <em>builds</em> dbt and owns the roadmap. Snowflake can support their platform. They cannot support dbt.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake supports the runtime; dbt-specific issues, packages, and version upgrades are the customer's. dbt Labs support is the team that <em>builds</em> dbt — one vendor, one incident. Ask: "Last time a dbt run failed on Snowflake, who did you call?"</div>
       <div class="tag-row"><span class="tag tag-support">Support</span></div>
     </div>
 
     <div class="question-card">
       <div class="question-text">Have you ever needed urgent help with a dbt-specific issue? What was that experience like going through Snowflake's support channel?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Snowflake SEs have general dbt knowledge but no deep platform expertise. For complex issues, only dbt Labs support has the depth to resolve them quickly.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Two vendors, one incident: when a package, adapter, or dbt version is the cause, the runtime vendor can't own the fix. dbt platform customers get the team that maintains dbt, and version upgrades are managed for them.</div>
       <div class="tag-row"><span class="tag tag-support">Support</span></div>
     </div>
 
@@ -570,7 +579,7 @@
     </div>
   </div>
 
-  <p class="footnote">dbt Labs internal FY26 sales enablement (May 2026). <strong>Do not share with Snowflake.</strong> Pair with the <a href="index.html" style="color:#999">feature comparison</a>.</p>
+  <p class="footnote">Sources: Snowflake dbt Projects Hub and battlecard (October 2026), dbt Pricing &amp; Packaging source of truth (April 2026), dbt State and dbt v2 GA materials (September 2026). *15–30% compute savings on average based on dbt State design partner results; individual savings vary. <strong>Internal use only.</strong> Pair with the <a href="index.html" style="color:#999">feature comparison</a>.</p>
 </div>
 </div><!-- /tab-snowflake -->
 
@@ -637,7 +646,7 @@
 
     <div class="question-card">
       <div class="question-text">Are your engineers using AI tools to write SQL or scaffold dbt models today? Is that part of your standard workflow?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Core has no built-in AI. dbt Copilot generates SQL, documentation, tests, and semantic models natively in the platform — no third-party tool stitching required.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Wizard CLI (public beta) works with self-hosted dbt and BYOK, so Core users get a project-grounded agent too. The platform adds Wizard inline in Studio, Canvas for analysts, and included Wizard usage on Enterprise ($100/mo) and Enterprise+ ($200/mo).</div>
       <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-dx">Dev experience</span></div>
     </div>
 
@@ -671,7 +680,7 @@
 
     <div class="question-card">
       <div class="question-text">When a run fails midway, does your next run rebuild every model or just what changed?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt Core supports the `--state` flag manually, but state-aware orchestration as a managed, automatic feature is an Enterprise capability. Most Core teams are rebuilding the full DAG every run.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt State is available to Core as a plug-in (v1.7+) and natively in dbt v2, so skipping isn't platform-exclusive — but Cost Insights, which proves what it saved per model and job, is a platform (Enterprise) feature. Most Core teams are still rebuilding the full DAG every run.</div>
       <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
     </div>
 
@@ -880,7 +889,7 @@
 
     <div class="question-card">
       <div class="question-text">How much are you spending on Snowflake compute for your dbt runs, and do you have visibility into which models are the most expensive?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> State-aware orchestration and the cost optimization dashboard are Enterprise features. Without them, teams on Starter are running full-DAG rebuilds and flying blind on compute spend.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt State is an add-on available on Starter, but Cost Insights — which shows credits saved per model and job — is an Enterprise feature. Without it, Starter teams can skip models but can't show finance what it saved.</div>
       <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
     </div>
   </div>
@@ -895,7 +904,7 @@
 
     <div class="question-card">
       <div class="question-text">Are your engineers using dbt Copilot today? Have you noticed them bumping up against the 100-action monthly limit?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Starter includes 100 Copilot actions/month. Enterprise increases this to 5,000 and unlocks advanced Copilot features — natural language in Canvas and Bring Your Own Key (BYOK).</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> Starter includes 100 Copilot actions/month. Enterprise increases this to 5,000 (Enterprise+ 10,000) and unlocks advanced Copilot — natural language in Canvas and Insights, and BYOK. dbt Wizard usage is included on Enterprise ($100/mo) and Enterprise+ ($200/mo).</div>
       <div class="tag-row"><span class="tag tag-ai">AI readiness</span><span class="tag tag-dx">Dev experience</span></div>
     </div>
 
@@ -922,7 +931,7 @@
 
     <div class="question-card">
       <div class="question-text">When a production run fails partway through, does your next run pick up from where it left off — or does it start over from scratch?</div>
-      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> State-aware orchestration is an Enterprise feature. On Starter, every run rebuilds the full DAG. Platform customers with SAO typically see 30–50% compute reduction — a CFO-ready number.</div>
+      <div class="surfaces"><span class="surfaces-label">Surfaces →</span> dbt State can be added to Starter, but without Cost Insights (Enterprise) there's no view of what it saved. Design partners see 15–30% average compute savings* — say it as a range, never a commitment.</div>
       <div class="tag-row"><span class="tag tag-cost">Cost</span></div>
     </div>
 
